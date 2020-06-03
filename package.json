@@ -1,0 +1,31 @@
+{
+  "name": "varys",
+  "version": "0.1.0",
+  "description": "The master of whispers",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VarysDB/varys.git"
+  },
+  "author": "George R. R. Martin",
+  "contributors": [
+    {
+      "name": "Bruno Luís Panuto Silva",
+      "email": "bl.panuto@gmail.com",
+      "url": "https://github.com/nubunto"
+    },
+    {
+      "name": "Danilo Marcolin Valente",
+      "email": "danilovalente96@gmail.com",
+      "url": "https://danilo-valente.github.io"
+    }
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VarysDB/varys/issues"
+  },
+  "homepage": "https://github.com/VarysDB/varys#readme"
+}
