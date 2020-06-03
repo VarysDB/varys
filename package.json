@@ -1,10 +1,21 @@
 {
-  "name": "varys",
+  "name": "@varys/root",
   "version": "0.1.0",
   "description": "The master of whispers",
+  "private": true,
   "main": "src/index.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "directories": {
+    "packages": "packages",
+    "test": "test"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "engines": {
+    "node": "^14.0.0",
+    "npm": "^6.0.0"
   },
   "repository": {
     "type": "git",
@@ -23,9 +34,12 @@
       "url": "https://danilo-valente.github.io"
     }
   ],
-  "license": "ISC",
+  "license": "BSD-3-Clause-Clear",
   "bugs": {
     "url": "https://github.com/VarysDB/varys/issues"
   },
-  "homepage": "https://github.com/VarysDB/varys#readme"
+  "homepage": "https://github.com/VarysDB/varys#readme",
+  "devDependencies": {
+    "lerna": "^3.22.0"
+  }
 }
