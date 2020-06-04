@@ -1,8 +1,8 @@
 {
-  "name": "@varys/app",
+  "name": "@varys/port-pg",
   "version": "0.1.0",
-  "description": "RESTful application",
-  "private": true,
+  "description": "Database access implementations",
+  "private": false,
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "directories": {
@@ -23,7 +23,6 @@
     "prepublishOnly": "npm run build",
     "start": "node .",
     "start:ts": "ts-node src/index.ts",
-    "start:dev": "export $(grep -v '^#' .env | xargs) && nodemon --watch src -e ts,tsx --ignore 'src/frontend' --ignore '*.spec.ts*' --ignore '*Test.ts*' --exec 'npm run start:ts'",
     "watch": "nodemon --watch .. -e ts,tsx --ignore 'src/frontend' --ignore '*.spec.ts*' --ignore '*Test.ts*' --exec 'npm run build'",
     "lint:check": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint --fix \"src/**/*.{ts,tsx,jsx}\"",
@@ -54,11 +53,15 @@
   },
   "homepage": "https://github.com/VarysDB/varys#readme",
   "dependencies": {
-    "@varys/core": "^0.1.0",
-    "tslib": "^2.0.0"
+    "@varys/domain": "^0.1.0",
+    "knex": "^0.21.1",
+    "tslib": "^2.0.0",
+    "uuid": "^8.0.0"
   },
   "devDependencies": {
+    "@types/knex": "^0.16.1",
     "@types/node": "^14.0.9",
+    "@types/uuid": "^8.0.0",
     "nodemon": "^2.0.4",
     "typescript": "^3.9.3"
   }

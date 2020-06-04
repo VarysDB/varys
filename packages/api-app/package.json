@@ -1,0 +1,67 @@
+{
+  "name": "@varys/api-app",
+  "version": "0.1.0",
+  "description": "RESTful application",
+  "private": true,
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "exports": {
+    ".": "./lib/index.js"
+  },
+  "engines": {
+    "node": "^14.0.0",
+    "npm": "^6.0.0"
+  },
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "start": "node .",
+    "start:ts": "ts-node src/index.ts",
+    "start:dev": "export $(grep -v '^#' .env | xargs) && nodemon --watch src -e ts,tsx --ignore 'src/frontend' --ignore '*.spec.ts*' --ignore '*Test.ts*' --exec 'npm run start:ts'",
+    "watch": "nodemon --watch .. -e ts,tsx --ignore 'src/frontend' --ignore '*.spec.ts*' --ignore '*Test.ts*' --exec 'npm run build'",
+    "lint:check": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint --fix \"src/**/*.{ts,tsx,jsx}\"",
+    "test": "TS_NODE_FILES=true mocha src/**/*.spec.ts",
+    "clean": "rimraf lib",
+    "build": "npm run clean && tsc --declaration --strictPropertyInitialization false"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VarysDB/varys.git"
+  },
+  "author": "George R. R. Martin",
+  "contributors": [
+    {
+      "name": "Bruno Luís Panuto Silva",
+      "email": "bl.panuto@gmail.com",
+      "url": "https://github.com/nubunto"
+    },
+    {
+      "name": "Danilo Marcolin Valente",
+      "email": "danilovalente96@gmail.com",
+      "url": "https://danilo-valente.github.io"
+    }
+  ],
+  "license": "BSD-3-Clause-Clear",
+  "bugs": {
+    "url": "https://github.com/VarysDB/varys/issues"
+  },
+  "homepage": "https://github.com/VarysDB/varys#readme",
+  "dependencies": {
+    "@varys/api-model": "^0.1.0",
+    "@varys/domain": "^0.1.0",
+    "@varys/port-pg": "^0.1.0",
+    "tslib": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.9",
+    "nodemon": "^2.0.4",
+    "typescript": "^3.9.3"
+  }
+}
