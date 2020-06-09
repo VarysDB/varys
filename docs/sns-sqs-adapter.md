@@ -1,6 +1,22 @@
-## The SNS_SQS PubSub Adapter
+# The SNS_SQS PubSub Adapter
 
 The SNS_SQS Adapter handles publishing facts to SNS and handles SQS subscriptions to the Varys fact SNS topic.
+
+## Initial Configuration
+
+```
+{
+  "pubsub": {
+    "adapter": "SNS_SQS",
+    "config": {
+      // the global topic of facts to publish data to
+      "facsTopic": String
+    }
+  }
+}
+```
+
+## How it works
 
 When a new fact is discovered, the Adapter will push to the topic a message with the body being the fact. In the message attributes, the Adapter will add an entry called `VARYS_FACT_IDENTIFIER`, with a value constructed as: `${NAMESPACE}:${REFERENCE}:${TYPE}`.
 

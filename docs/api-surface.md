@@ -16,7 +16,7 @@ Varys acts as an opinionated broker for published facts, allowing you to fan-out
 
 When discovering a new fact, Varys saves the fact to the configured database, and also publishes it to the configured PubSub adapter.
 
-The naming convention for fact publishing and subscription is `varys:${namespaceType}:${factType}`.
+The naming convention for fact publishing and subscription is `${namespaceType}:${reference}:${factType}`.
 
 For subscription rules and capabilities, refer to the documentation of the PubSub adapter of your choice.
 
@@ -89,6 +89,13 @@ Array {
 - Path: `/namespaces/:namespaceType/:reference/facts/:factType`
 - Request body definition:
 ```
+{
+    "type": String,
+    "source": String,
+    "data": String | Number | Object | Date | null,
+    "score": Number,
+    "discoveryDate": Date
+}
 ```
 - Response Status Code `201 CREATED` | `400 BAD REQUEST`
 - Response body definition:
