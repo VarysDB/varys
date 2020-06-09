@@ -16,6 +16,11 @@ The configuration definition is as follows:
     "persistence": {
         "adapter": String,
         "config": PersistenceAdapterSpecificConfig
+    },
+    "aws": {
+        "region": String,
+        "accountId": String,
+        "secretKey": String
     }
 }
 ```
