@@ -10,7 +10,7 @@ The SNS_SQS Adapter handles publishing facts to SNS and handles SQS subscription
     "adapter": "SNS_SQS",
     "config": {
       // the global topic of facts to publish data to
-      "facsTopic": String
+      "factsTopic": String
     }
   }
 }
