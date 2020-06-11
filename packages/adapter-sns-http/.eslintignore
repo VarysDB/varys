@@ -1,0 +1,7 @@
+src/**/*.spec.ts
+src/server/types
+
+migrations/
+dumps/
+docs/
+seeds/

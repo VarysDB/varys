@@ -1,8 +1,7 @@
 {
-  "name": "@varys/api-app",
+  "name": "@varys/adapter-sns-http",
   "version": "0.1.0",
-  "description": "RESTful application",
-  "private": true,
+  "description": "PubSub adapter based on SNS & HTTP",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "directories": {
@@ -37,16 +36,8 @@
   },
   "author": "George R. R. Martin",
   "contributors": [
-    {
-      "name": "Bruno Luís Panuto Silva",
-      "email": "bl.panuto@gmail.com",
-      "url": "https://github.com/nubunto"
-    },
-    {
-      "name": "Danilo Marcolin Valente",
-      "email": "danilovalente96@gmail.com",
-      "url": "https://danilo-valente.github.io"
-    }
+    "Bruno Luís Panuto Silva <bl.panuto@gmail.com> (https://github.com/nubunto)",
+    "Danilo Marcolin Valente <danilovalente96@gmail.com> (https://danilo-valente.github.io)"
   ],
   "license": "BSD-3-Clause-Clear",
   "bugs": {
@@ -54,15 +45,16 @@
   },
   "homepage": "https://github.com/VarysDB/varys#readme",
   "dependencies": {
-    "@varys/adapter-pg": "^0.1.0",
-    "@varys/adapter-sns-http": "^0.1.0",
-    "@varys/api-model": "^0.1.0",
     "@varys/domain": "^0.1.0",
+    "aws-sdk": "^2.693.0",
     "tslib": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^14.0.9",
     "nodemon": "^2.0.4",
     "typescript": "^3.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
