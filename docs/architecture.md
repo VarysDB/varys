@@ -18,7 +18,7 @@ Varys supports any data store, as long as they implement a Repository. Currently
 
 Varys supports any messaging broker, as long as they implement a PubSub Adapter. Currently, Varys ships with these PubSub Adapters:
 
-- The `SNS_SQS` PubSub Adapter
+- The `SNS_HTTP` PubSub Adapter
 
 ## PubSub Adapters
 

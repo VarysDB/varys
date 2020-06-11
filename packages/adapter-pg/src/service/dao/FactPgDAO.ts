@@ -16,6 +16,7 @@ export class FactPgDAO {
 
     constructor(private readonly knex: Knex, tablePrefix: string, namespaceType: string) {
 
+        // FIXME: use schemas instead
         this.baseDAO = new KnexDAO<FactEntity>(knex, `${tablePrefix}_${namespaceType}`);
     }
 

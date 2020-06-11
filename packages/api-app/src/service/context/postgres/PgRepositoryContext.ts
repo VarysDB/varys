@@ -1,6 +1,6 @@
 import Knex from 'knex';
 import { FactRepository, NamespaceRepository } from '@varys/domain';
-import { FactPgRepository, NamespacePgRepository } from '@varys/port-pg';
+import { FactPgRepository, NamespacePgRepository } from '@varys/adapter-pg';
 import { RepositoryContext } from '../RepositoryContext';
 
 export class PgRepositoryContext implements RepositoryContext {
@@ -11,8 +11,8 @@ export class PgRepositoryContext implements RepositoryContext {
 
     constructor(knex: Knex) {
 
-        this.factRepository = new FactPgRepository(knex);
+        this.factRepository = new FactPgRepository(knex, 'facts');
 
-        this.namespaceRepository = new NamespacePgRepository(knex);
+        this.namespaceRepository = new NamespacePgRepository(knex, 'facts');
     }
 }

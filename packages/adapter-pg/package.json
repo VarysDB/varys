@@ -1,5 +1,5 @@
 {
-  "name": "@varys/port-pg",
+  "name": "@varys/adapter-pg",
   "version": "0.1.0",
   "description": "Database access implementations",
   "private": false,
