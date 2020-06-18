@@ -11,9 +11,11 @@ export class AtomicPgRepositoryContext implements AtomicRepositoryContext {
 
     constructor(private readonly transaction: Knex.Transaction) {
 
-        this.factRepository = new FactPgRepository(transaction, 'facts');
+        const factsTable = 'facts';
 
-        this.namespaceRepository = new NamespacePgRepository(transaction, 'facts');
+        this.factRepository = new FactPgRepository(transaction, factsTable);
+
+        this.namespaceRepository = new NamespacePgRepository(transaction, factsTable);
     }
 
     async commit(): Promise<void> {

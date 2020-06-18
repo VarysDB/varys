@@ -7,8 +7,8 @@ async function run() {
         factsDLQArn: "other arn",
         awsConfig: {
             region: 'us-east-1',
-            accessKeyId: 'AKIASIQNCKY2HFTKP6Y6',
-            secretAccessKey: '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'
+            accessKeyId: 'AWS_ACCESS_KEY',
+            secretAccessKey: 'AWS_SECRET_ACCESS_KEY'
         }
     });
     console.log(snsHttpAdapter);
