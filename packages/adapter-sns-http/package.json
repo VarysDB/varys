@@ -22,7 +22,6 @@
     "prepublishOnly": "npm run build",
     "start": "node .",
     "start:ts": "ts-node src/index.ts",
-    "start:dev": "export $(grep -v '^#' .env | xargs) && nodemon --watch src -e ts,tsx --ignore 'src/frontend' --ignore '*.spec.ts*' --ignore '*Test.ts*' --exec 'npm run start:ts'",
     "watch": "nodemon --watch .. -e ts,tsx --ignore 'src/frontend' --ignore '*.spec.ts*' --ignore '*Test.ts*' --exec 'npm run build'",
     "lint:check": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint --fix \"src/**/*.{ts,tsx,jsx}\"",
