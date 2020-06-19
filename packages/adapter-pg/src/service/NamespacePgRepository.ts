@@ -7,33 +7,33 @@ export class NamespacePgRepository implements NamespaceRepository {
 
     constructor(
         private readonly knex: Knex,
-        private readonly tablePrefix: string
+        private readonly schema: string
     ) {
     }
 
-    private newDao(namespaceType: string): FactPgDAO {
-        return new FactPgDAO(this.knex, this.tablePrefix, namespaceType);
+    private newDao(blackboard: string): FactPgDAO {
+        return new FactPgDAO(this.knex, this.schema, blackboard);
     }
 
-    async find(type: string, reference: string): Promise<Namespace | null> {
+    async find(blackboard: string, namespace: string): Promise<Namespace> {
 
-        const dao = this.newDao(type);
+        const dao = this.newDao(blackboard);
 
-        const entities = await dao.findLatestTypesByReference(reference, null);
+        const entities = await dao.findLatestTypesByReference(namespace, null);
 
-        return this.buildFromEntities(type, reference, entities);
+        return this.buildFromEntities(blackboard, namespace, entities);
     }
 
-    async findSubset(type: string, reference: string, factTypes: string[]): Promise<Namespace | null> {
+    async findSubset(blackboard: string, reference: string, factTypes: string[]): Promise<Namespace> {
 
-        const dao = this.newDao(type);
+        const dao = this.newDao(blackboard);
 
         const entities = await dao.findLatestTypesByReference(reference, factTypes);
 
-        return this.buildFromEntities(type, reference, entities);
+        return this.buildFromEntities(blackboard, reference, entities);
     }
 
-    private buildFromEntities(type: string, reference: string, entities: FactEntity[]): Namespace {
+    private buildFromEntities(blackboard: string, reference: string, entities: FactEntity[]): Namespace {
 
         const facts = entities.reduce<Record<string, NamespaceFact>>((map, entity) => {
             map[entity.type] = {
@@ -46,7 +46,7 @@ export class NamespacePgRepository implements NamespaceRepository {
         }, {});
 
         return {
-            type,
+            blackboard,
             reference,
             facts
         };

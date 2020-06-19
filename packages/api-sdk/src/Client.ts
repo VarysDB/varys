@@ -6,7 +6,7 @@ export class Client<T> {
     constructor(
         // TODO: remove
         // @ts-ignore
-        private readonly namespace: string,
+        private readonly blackboard: string,
         // TODO: remove
         // @ts-ignore
         private readonly mapper: NamespaceMapper<T>
@@ -15,19 +15,19 @@ export class Client<T> {
 
     // TODO: remove
     // @ts-ignore
-    registerFact(reference: string, fact: FactDTO): Promise<RegisterFactRequest> {
+    registerFact(namespace: string, fact: FactDTO): Promise<RegisterFactRequest> {
         // TODO: send RegistrationRequest
     }
 
     // TODO: remove
     // @ts-ignore
-    findFact(reference: string, type: string): Promise<FindFactResponse> {
+    findFact(namespace: string, type: string): Promise<FindFactResponse> {
         // TODO: send FindFactRequest
     }
 
     // TODO: remove
     // @ts-ignore
-    findNamespace(reference: string): Promise<FindNamespaceResponse> {
+    findNamespace(namespace: string): Promise<FindNamespaceResponse> {
         // TODO: send FindNamespaceRequest
     }
 

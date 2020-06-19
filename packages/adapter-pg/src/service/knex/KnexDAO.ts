@@ -9,6 +9,7 @@ export class KnexDAO<TRecord extends {}> {
 
     constructor(
         private readonly knex: Knex,
+        private readonly schema: string,
         private readonly table: string
     ) {
     }
@@ -38,7 +39,7 @@ export class KnexDAO<TRecord extends {}> {
 
         const aliasedTable = alias ? `${this.table} as ${alias}` : this.table;
 
-        return this.knex(aliasedTable);
+        return this.knex(aliasedTable).withSchema(this.schema);
     }
 
     async findOne(where: Where<TRecord>): Promise<TRecord | null> {

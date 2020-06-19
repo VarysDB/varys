@@ -1,4 +1,4 @@
-export { LogLevel } from './LogLevel';
-export { FactData } from './model/FactData';
-export { Logger } from './service/Logger';
-export { LoggerFactory } from './service/LoggerFactory';
+export * from './LogLevel';
+export * from './model/FactData';
+export * from './service/Logger';
+export * from './service/LoggerFactory';

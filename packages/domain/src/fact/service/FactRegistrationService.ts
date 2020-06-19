@@ -37,6 +37,7 @@ export class FactRegistrationService {
 
     async registerFacts(facts: Fact[]): Promise<boolean[]> {
 
+        // TODO: batch create facts
         const results = [];
 
         for (const fact of facts) {

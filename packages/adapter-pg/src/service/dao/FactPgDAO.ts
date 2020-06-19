@@ -14,38 +14,61 @@ export class FactPgDAO {
 
     private readonly baseDAO: KnexDAO<FactEntity>;
 
-    constructor(private readonly knex: Knex, tablePrefix: string, namespaceType: string) {
-
-        // FIXME: use schemas instead
-        this.baseDAO = new KnexDAO<FactEntity>(knex, `${tablePrefix}_${namespaceType}`);
+    constructor(
+        private readonly knex: Knex,
+        private readonly schema: string,
+        private readonly blackboard: string
+    ) {
+        this.baseDAO = new KnexDAO<FactEntity>(knex, schema, blackboard);
     }
 
-    calculateId(reference: string, type: string, source: string, data: FactData): FactId {
+    async createTable(): Promise<void> {
 
-        const fingerprint = `${reference}:${type}:${source}:${objectHash.sha1(data)}`;
+        const ref = this.knex.schema.withSchema(this.schema);
+
+        if (await ref.hasTable(this.blackboard)) {
+            return;
+        }
+
+        await ref.createTable(this.blackboard, table => {
+            table.uuid('id').primary();
+            table.string('fingerprint').notNullable();
+            table.string('namespace').notNullable().index();
+            table.string('type').notNullable();
+            table.string('source').notNullable();
+            table.json('data').notNullable();
+            table.specificType('score', 'smallint').notNullable();
+            table.timestamp('discovery_date').notNullable();
+            table.timestamps();
+        });
+    }
+
+    calculateId(namespace: string, type: string, source: string, data: FactData): FactId {
+
+        const fingerprint = `${namespace}:${type}:${source}:${objectHash.sha1(data)}`;
 
         const id = uuid.v5(fingerprint, '00000000-0000-0000-0000-000000000000');
 
         return { id, fingerprint };
     }
 
-    async findLatestByReference(reference: string, type: string): Promise<FactEntity | null> {
+    async findLatestByReference(namespace: string, type: string): Promise<FactEntity | null> {
 
-        const [namespace] = await this.findLatestTypesByReference(reference, [type]);
+        const [entities] = await this.findLatestTypesByReference(namespace, [type]);
 
-        return namespace || null;
+        return entities || null;
     }
 
-    async findLatestTypesByReference(reference: string, types: string[] | null): Promise<FactEntity[]> {
+    async findLatestTypesByReference(namespace: string, types: string[] | null): Promise<FactEntity[]> {
         return await this.baseDAO.ref()
-            .select(this.knex.raw('DISTINCT ON ("reference", "type") *'))
-            .where('reference', reference)
+            .select(this.knex.raw('DISTINCT ON ("namespace", "type") *'))
+            .where('namespace', namespace)
             .where(builder => {
                 if (types) {
                     builder.whereIn('type', types);
                 }
             })
-            .orderBy('reference', 'asc')
+            .orderBy('namespace', 'asc')
             .orderBy('type', 'desc')
             .orderBy('score', 'desc')
             .orderBy('discovery_date', 'desc');

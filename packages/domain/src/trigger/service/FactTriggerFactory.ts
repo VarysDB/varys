@@ -33,13 +33,13 @@ export class FactTriggerFactory {
         }, new NamespaceTypeMap());
     }
 
-    getTriggers(namespaceType: string, factType: string): FactTrigger[] {
+    getTriggers(blackboard: string, factType: string): FactTrigger[] {
 
-        if (!this.triggersMap.has(namespaceType)) {
+        if (!this.triggersMap.has(blackboard)) {
             return [];
         }
 
-        const factTypeMap = this.triggersMap.get(namespaceType)!;
+        const factTypeMap = this.triggersMap.get(blackboard)!;
         if (factTypeMap.has(factType)) {
             return [];
         }

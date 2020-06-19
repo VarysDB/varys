@@ -1,3 +1,8 @@
+import { FactDataDTO } from '../dto';
+
 export interface RegisterFactRequest {
-    // TODO
+    source: string;
+    data: FactDataDTO;
+    score: number;
+    discoveryDate: Date;
 }

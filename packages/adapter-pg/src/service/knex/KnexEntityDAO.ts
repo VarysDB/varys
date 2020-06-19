@@ -8,8 +8,8 @@ export class KnexEntityDAO<TRecord extends KnexEntity> {
 
     private readonly knexDAO: KnexDAO<TRecord>;
 
-    constructor(knex: Knex, table: string) {
-        this.knexDAO = new KnexDAO<TRecord>(knex, table);
+    constructor(knex: Knex, table: string, schema: string) {
+        this.knexDAO = new KnexDAO<TRecord>(knex, table, schema);
     }
 
     async findById(id: Knex.Value): Promise<TRecord | null> {

@@ -1,8 +1,8 @@
 import { FactData } from 'common/model/FactData';
-import { FactNamespace } from './FactNamespace';
 
 export interface Fact {
-    namespace: FactNamespace;
+    blackboard: string;
+    namespace: string;
     type: string;
     source: string;
     data: FactData;

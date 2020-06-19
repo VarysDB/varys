@@ -8,19 +8,15 @@ export declare class Logger {
 
     isLevelEnabled(otherLevel: LogLevel): boolean;
 
-    debug(...data: any[]): Logger;
+    debug(message: string, ...meta: any[]): void;
 
-    info(...data: any[]): Logger;
+    info(message: string, ...meta: any[]): void;
 
-    warn(...data: any[]): Logger;
+    warn(message: string, ...meta: any[]): void;
 
-    error(...data: any[]): Logger;
+    error(message: string, ...meta: any[]): void;
 
-    fatal(...data: any[]): Logger;
+    fatal(message: string, ...meta: any[]): void;
 
-    trace(...data: any[]): Logger;
-
-    start(): Logger;
-
-    stop(): Logger;
+    trace(message: string, ...meta: any[]): void;
 }
