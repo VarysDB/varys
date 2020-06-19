@@ -1,7 +1,7 @@
 import { NamespaceFact } from './NamespaceFact';
 
 export interface Namespace {
-    type: string;
+    blackboard: string;
     reference: string;
     facts: Record<string, NamespaceFact>;
 }

@@ -1,5 +1,7 @@
 import { Logger } from './Logger';
 
+export type LoggerContext = string | Function | Object;
+
 export interface LoggerFactory {
-    getLogger(context: string | Function | Object): Logger;
+    getLogger(context: LoggerContext): Logger;
 }

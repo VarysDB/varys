@@ -1,17 +1,17 @@
 import Knex from 'knex';
-import { Fact, FactNamespace, FactRepository } from '@varys/domain';
+import { Fact, FactRepository } from '@varys/domain';
 import { FactPgDAO } from './dao/FactPgDAO';
 
 export class FactPgRepository implements FactRepository {
 
     constructor(
         private readonly knex: Knex,
-        private readonly tablePrefix: string
+        private readonly schema: string
     ) {
     }
 
-    private newDao(namespaceType: string): FactPgDAO {
-        return new FactPgDAO(this.knex, this.tablePrefix, namespaceType);
+    private newDao(blackboard: string): FactPgDAO {
+        return new FactPgDAO(this.knex, this.schema, blackboard);
     }
 
     async save(fact: Fact): Promise<boolean> {
@@ -19,20 +19,20 @@ export class FactPgRepository implements FactRepository {
         // TODO: create table if not exists?
         // const namespaceEntity = await this.namespacePgDAO.findOrCreateByReference({
         //     id: uuid(),
-        //     type: fact.namespace.type,
-        //     reference: fact.namespace.reference,
+        //     type: fact.namespace.blackboard,
+        //     namespace: fact.namespace,
         //     created_at: new Date(),
         //     updated_at: null
         // });
 
-        const dao = this.newDao(fact.namespace.type);
+        const dao = this.newDao(fact.blackboard);
 
-        const { id, fingerprint } = dao.calculateId(fact.namespace.reference, fact.type, fact.source, fact.data);
+        const { id, fingerprint } = dao.calculateId(fact.namespace, fact.type, fact.source, fact.data);
 
         const factEntity = await dao.saveRevision({
             id,
             fingerprint,
-            reference: fact.namespace.reference,
+            namespace: fact.namespace,
             type: fact.type,
             source: fact.source,
             data: JSON.stringify(fact.data),
@@ -45,25 +45,40 @@ export class FactPgRepository implements FactRepository {
         return !!factEntity;
     }
 
-    async find(type: string, namespace: FactNamespace): Promise<Fact | null> {
+    async find(type: string, blackboard: string, namespace: string): Promise<Fact | null> {
 
-        const dao = this.newDao(namespace.type);
+        const dao = this.newDao(blackboard);
 
-        const factEntity = await dao.findLatestByReference(namespace.reference, type);
+        const factEntity = await dao.findLatestByReference(namespace, type);
         if (!factEntity) {
             return null;
         }
 
         return {
-            namespace: {
-                type: namespace.type,
-                reference: namespace.reference
-            },
+            blackboard,
+            namespace,
             type: factEntity.type,
             source: factEntity.source,
             data: factEntity.data,
             score: factEntity.score,
             discoveryDate: factEntity.discovery_date
         };
+    }
+
+    async findAll(blackboard: string, namespace: string): Promise<Fact[]> {
+
+        const dao = this.newDao(blackboard);
+
+        const factEntities = await dao.findLatestTypesByReference(namespace, null);
+
+        return factEntities.map(entity => ({
+            blackboard,
+            namespace,
+            type: entity.type,
+            source: entity.source,
+            data: entity.data,
+            score: entity.score,
+            discoveryDate: entity.discovery_date
+        }));
     }
 }

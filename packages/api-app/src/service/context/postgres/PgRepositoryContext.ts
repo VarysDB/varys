@@ -1,6 +1,6 @@
 import Knex from 'knex';
-import { FactRepository, NamespaceRepository } from '@varys/domain';
-import { FactPgRepository, NamespacePgRepository } from '@varys/adapter-pg';
+import { BlackboardRepository, FactRepository, NamespaceRepository } from '@varys/domain';
+import { BlackboardPgRepository, FactPgRepository, NamespacePgRepository } from '@varys/adapter-pg';
 import { RepositoryContext } from '../RepositoryContext';
 
 export class PgRepositoryContext implements RepositoryContext {
@@ -9,12 +9,14 @@ export class PgRepositoryContext implements RepositoryContext {
 
     readonly namespaceRepository: NamespaceRepository;
 
-    constructor(knex: Knex) {
+    readonly blackboardRepository: BlackboardRepository;
 
-        const factsTable = 'facts';
+    constructor(knex: Knex, schema: string) {
 
-        this.factRepository = new FactPgRepository(knex, factsTable);
+        this.factRepository = new FactPgRepository(knex, schema);
 
-        this.namespaceRepository = new NamespacePgRepository(knex, factsTable);
+        this.namespaceRepository = new NamespacePgRepository(knex, schema);
+
+        this.blackboardRepository = new BlackboardPgRepository(knex, schema);
     }
 }

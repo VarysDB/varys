@@ -30,7 +30,7 @@ export class SnsHttpAdapter implements PubSubAdapter {
             MessageAttributes: {
                 [TOPIC_ATTRIBUTE_NAME]: {
                     DataType: 'String',
-                    StringValue: `${fact.factNamespace.type}:${fact.factNamespace.reference}:${fact.type}`
+                    StringValue: `${fact.blackboard}:${fact.namespace}:${fact.type}`
                 }
             },
             TopicArn: this.config.factsTopicArn
@@ -63,7 +63,7 @@ export class SnsHttpAdapter implements PubSubAdapter {
         } else {
             filter = [topic];
         }
- 
+
         return JSON.stringify({
             [TOPIC_ATTRIBUTE_NAME]: filter
         })

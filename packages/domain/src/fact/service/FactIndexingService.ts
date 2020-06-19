@@ -1,4 +1,5 @@
-import { Fact, FactRegistrationService } from '@varys/domain';
+import { FactRegistrationService } from './FactRegistrationService';
+import { Fact } from '../model/fact';
 
 export class FactIndexingService {
 
@@ -8,12 +9,12 @@ export class FactIndexingService {
     }
 
     async indexFact(fact: Fact): Promise<void> {
-        // TODO: send to queue instead
+        // TODO: publish to internal topic instead
         await this.factRegistrationService.registerFact(fact);
     }
 
     async indexFacts(facts: Fact[]): Promise<void> {
-        // TODO: send to queue instead
+        // TODO: publish to internal topic instead
         await this.factRegistrationService.registerFacts(facts);
     }
 }

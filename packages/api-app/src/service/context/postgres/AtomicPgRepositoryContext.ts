@@ -1,6 +1,6 @@
 import Knex from 'knex';
-import { FactRepository, NamespaceRepository } from '@varys/domain';
-import { FactPgRepository, NamespacePgRepository } from '@varys/adapter-pg';
+import { BlackboardRepository, FactRepository, NamespaceRepository } from '@varys/domain';
+import { BlackboardPgRepository, FactPgRepository, NamespacePgRepository } from '@varys/adapter-pg';
 import { AtomicRepositoryContext } from '../AtomicRepositoryContext';
 
 export class AtomicPgRepositoryContext implements AtomicRepositoryContext {
@@ -9,13 +9,15 @@ export class AtomicPgRepositoryContext implements AtomicRepositoryContext {
 
     readonly namespaceRepository: NamespaceRepository;
 
-    constructor(private readonly transaction: Knex.Transaction) {
+    readonly blackboardRepository: BlackboardRepository;
 
-        const factsTable = 'facts';
+    constructor(private readonly transaction: Knex.Transaction, schema: string) {
 
-        this.factRepository = new FactPgRepository(transaction, factsTable);
+        this.factRepository = new FactPgRepository(transaction, schema);
 
-        this.namespaceRepository = new NamespacePgRepository(transaction, factsTable);
+        this.namespaceRepository = new NamespacePgRepository(transaction, schema);
+
+        this.blackboardRepository = new BlackboardPgRepository(transaction, schema);
     }
 
     async commit(): Promise<void> {
