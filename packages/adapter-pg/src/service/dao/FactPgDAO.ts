@@ -1,5 +1,5 @@
 import Knex from 'knex';
-import uuid from 'uuid';
+import * as uuid from 'uuid';
 import objectHash from 'object-hash';
 import { FactData } from '@varys/domain';
 import { KnexDAO } from '../knex/KnexDAO';
@@ -43,9 +43,9 @@ export class FactPgDAO {
         });
     }
 
-    calculateId(namespace: string, type: string, source: string, data: FactData): FactId {
+    calculateId(namespace: string, type: string, source: string, data: FactData, discoveryDate: Date): FactId {
 
-        const fingerprint = `${namespace}:${type}:${source}:${objectHash.sha1(data)}`;
+        const fingerprint = `${namespace}:${type}:${source}:${objectHash.sha1(data)}:${discoveryDate.getTime()}`;
 
         const id = uuid.v5(fingerprint, '00000000-0000-0000-0000-000000000000');
 

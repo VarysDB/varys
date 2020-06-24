@@ -1,6 +1,7 @@
 import { Logger, LoggerFactory } from '../../common';
 import { Fact } from '../model/Fact';
 import { FactRepository } from '../repository/FactRepository';
+import { PubSubAdapter } from '../pubsub/PubSubAdapter';
 
 export class FactRegistrationService {
 
@@ -8,29 +9,28 @@ export class FactRegistrationService {
 
     constructor(
         loggerFactory: LoggerFactory,
-        private readonly factRepository: FactRepository
+        private readonly factRepository: FactRepository,
+        private readonly pubSubAdapter: PubSubAdapter
     ) {
         this.$log = loggerFactory.getLogger(this);
     }
 
+    // TODO: validate input
     async registerFact(fact: Fact): Promise<boolean> {
 
-        this.$log.debug('About to register discovery of fact', fact);
+        this.$log.debug('About to register discovery of fact %o', fact);
 
         const isNewFact = await this.factRepository.save(fact);
 
         if (!isNewFact) {
+            this.$log.debug('Fact already exists: %o', fact);
+
             return false;
         }
 
-        this.$log.info('About to run triggers for new fact', fact);
+        this.$log.info('About to notify listeners about new fact %o', fact);
 
-        // TODO: trigger listeners from an outer layer
-        // const triggers = this.triggerFactory.getTriggers(fact.namespace.type, fact.type);
-        //
-        // for (const trigger of triggers) {
-        //     await trigger.run(fact);
-        // }
+        await this.pubSubAdapter.publish(fact);
 
         return true;
     }

@@ -1,7 +1,7 @@
 import { FactDTO } from './FactDTO';
 
 export interface NamespaceDTO {
-    type: string;
+    blackboard: string;
     reference: string;
     facts: Record<string, FactDTO>;
 }

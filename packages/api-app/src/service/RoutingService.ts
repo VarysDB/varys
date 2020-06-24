@@ -1,5 +1,5 @@
-import { Express, Router, RouterOptions } from 'express';
-import listEndpoints, { Endpoint } from 'express-list-endpoints';
+import Koa from 'koa';
+import Router, { RouterOptions } from '@koa/router';
 import { Controller } from './Controller';
 
 export class RoutingService {
@@ -10,20 +10,22 @@ export class RoutingService {
     ) {
     }
 
-    mount(app: Express): Endpoint[] {
-        this.mountController(app, this.rootController);
+    mount(app: Koa): void {
+        const rootRouter = this.mountController(this.rootController);
 
-        return listEndpoints(app);
+        app.use(rootRouter.routes());
     }
 
-    private mountController(parentRouter: Router, controller: Controller): void {
+    private mountController(controller: Controller): Router {
 
-        const router = Router(this.params);
+        const router = new Router(this.params);
 
         controller.mount(router);
 
-        parentRouter.use(controller.rootPath(), router);
+        controller.children().forEach(controller => {
+            router.use(controller.rootPath(), this.mountController(controller).routes());
+        });
 
-        controller.children().forEach(controller => this.mountController(router, controller));
+        return router;
     }
 }

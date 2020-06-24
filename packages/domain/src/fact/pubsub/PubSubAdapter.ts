@@ -13,4 +13,6 @@ export interface PubSubAdapter {
     publish(fact: Fact): Promise<PublishResult>;
 
     subscribe(topic: string, attributes: SubscriptionAttributes): Promise<void>;
+
+    confirmSubscription(token: string): Promise<void>;
 }

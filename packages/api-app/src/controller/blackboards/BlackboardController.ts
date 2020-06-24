@@ -1,20 +1,20 @@
-import { Request, RequestHandler, Response, Router } from 'express';
-import { BlackboardDTO, BlackboardRoute } from '@varys/api-model';
-import { LoggerFactory } from '@varys/domain';
+import Router, { RouterContext } from '@koa/router';
+import { CREATED } from 'http-status-codes';
+import { BlackboardRoute } from '@varys/api-model';
 import { Controller } from '../../service/Controller';
-import { RepositoryContextFactory } from '../../service/context/RepositoryContextFactory';
 import { NamespacesController } from './namespaces/NamespacesController';
 import { BlackboardService } from '../../service/BlackboardService';
+import { validateParams } from '../../service/RequestValidator';
+import { NamespaceService } from '../../service/NamespaceService';
+import { FactService } from '../../service/FactService';
 
 export class BlackboardController implements Controller {
 
-    private readonly blackboardService: BlackboardService;
-
     constructor(
-        private readonly loggerFactory: LoggerFactory,
-        private readonly contextFactory: RepositoryContextFactory
+        private readonly blackboardService: BlackboardService,
+        private readonly namespaceService: NamespaceService,
+        private readonly factService: FactService
     ) {
-        this.blackboardService = new BlackboardService(contextFactory);
     }
 
     rootPath(): string {
@@ -23,25 +23,24 @@ export class BlackboardController implements Controller {
 
     children(): Controller[] {
         return [
-            new NamespacesController(this.loggerFactory, this.contextFactory)
+            new NamespacesController(this.namespaceService, this.factService)
         ];
     }
 
     mount(router: Router): void {
+        router.all('/', validateParams(BlackboardRoute.Params));
         router.post('/', this.create.bind(this));
     }
 
-    async create(
-        req: Request<BlackboardRoute.Params, BlackboardDTO, void>,
-        res: Response<BlackboardDTO>,
-        next: RequestHandler
-    ) {
-        const { blackboard } = req.params;
+    async create({ request, response, params }: RouterContext) {
+
+        const { blackboard } = params as BlackboardRoute.Params;
 
         await this.blackboardService.create({
             name: blackboard
         });
 
-        res.status(201).json();
+        response.status = CREATED;
+        response.body = {};
     }
 }
