@@ -14,7 +14,7 @@ export function factToDTO(fact: Fact): FactDTO {
 export function namespaceToDTO(namespace: Namespace): NamespaceDTO {
     return {
         reference: namespace.reference,
-        type: namespace.blackboard,
+        blackboard: namespace.blackboard,
         facts: Object.entries<NamespaceFact>(namespace.facts)
             .reduce<Record<string, FactDTO>>((map, [type, fact]) => ({
                 ...map,

@@ -1,20 +1,17 @@
-import { Request, RequestHandler, Response, Router } from 'express';
-import { LoggerFactory } from '@varys/domain';
-import { FactDTO, FactsRootRoute, RegisterFactBatchRequest } from '@varys/api-model';
+import Router, { RouterContext } from '@koa/router';
+import { ACCEPTED, OK } from 'http-status-codes';
+import { FactsRootRoute, RegisterFactBatchRequest } from '@varys/api-model';
 import { Controller } from '../../../../service/Controller';
-import { RepositoryContextFactory } from '../../../../service/context/RepositoryContextFactory';
 import { FactService } from '../../../../service/FactService';
 import { FactController } from './FactController';
+import { factToDTO } from '../../../../service/DtoUtils';
+import { validateBody, validateParams } from '../../../../service/RequestValidator';
 
 export class FactsRootController implements Controller {
 
-    private readonly factService: FactService;
-
     constructor(
-        private readonly loggerFactory: LoggerFactory,
-        private readonly contextFactory: RepositoryContextFactory
+        private readonly factService: FactService
     ) {
-        this.factService = new FactService(loggerFactory, contextFactory);
     }
 
     rootPath(): string {
@@ -23,38 +20,31 @@ export class FactsRootController implements Controller {
 
     children(): Controller[] {
         return [
-            new FactController(this.loggerFactory, this.contextFactory)
+            new FactController(this.factService)
         ];
     }
 
     mount(router: Router): void {
+        router.all('/', validateParams(FactsRootRoute.Params));
         router.get('/', this.findAll.bind(this));
-        router.post('/', this.createMany.bind(this));
+        router.post('/', validateBody(RegisterFactBatchRequest), this.createMany.bind(this));
     }
 
-    async findAll(
-        req: Request<FactsRootRoute.Params, FactDTO[], void>,
-        res: Response<FactDTO[]>,
-        next: RequestHandler
-    ): Promise<void> {
+    async findAll({ request, response, params }: RouterContext): Promise<void> {
 
-        const { blackboard, namespace } = req.params;
+        const { blackboard, namespace } = params as FactsRootRoute.Params;
 
         const facts = await this.factService.findAll(blackboard, namespace);
 
-        res.status(200).json(facts);
+        response.status = OK;
+        response.body = facts.map(factToDTO);
     }
 
-    async createMany(
-        req: Request<FactsRootRoute.Params, void, RegisterFactBatchRequest>,
-        res: Response<void>,
-        next: RequestHandler
-    ): Promise<void> {
+    async createMany({ request, response, params }: RouterContext): Promise<void> {
 
-        const { blackboard, namespace } = req.params;
+        const { blackboard, namespace } = params as FactsRootRoute.Params;
 
-        // TODO: assert provided body attributes
-        const { source, discoveryDate, facts } = req.body;
+        const { source, discoveryDate, facts } = request.body as RegisterFactBatchRequest;
 
         await this.factService.indexFacts(facts.map(fact => ({
             blackboard,
@@ -66,6 +56,7 @@ export class FactsRootController implements Controller {
             discoveryDate
         })));
 
-        res.status(202).json();
+        response.status = ACCEPTED;
+        response.body = {};
     }
 }

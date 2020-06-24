@@ -1,20 +1,16 @@
-import { Request, RequestHandler, Response, Router } from 'express';
-import { LoggerFactory } from '@varys/domain';
-import { FactDTO, FactRoute, RegisterFactRequest } from '@varys/api-model';
+import Router, { RouterContext } from '@koa/router';
+import { ACCEPTED, NOT_FOUND, OK } from 'http-status-codes';
+import { FactRoute, RegisterFactRequest } from '@varys/api-model';
 import { Controller } from '../../../../service/Controller';
-import { RepositoryContextFactory } from '../../../../service/context/RepositoryContextFactory';
 import { FactService } from '../../../../service/FactService';
 import { factToDTO } from '../../../../service/DtoUtils';
+import { validateBody, validateParams } from '../../../../service/RequestValidator';
 
 export class FactController implements Controller {
 
-    private readonly factService: FactService;
-
     constructor(
-        loggerFactory: LoggerFactory,
-        contextFactory: RepositoryContextFactory
+        private readonly factService: FactService
     ) {
-        this.factService = new FactService(loggerFactory, contextFactory);
     }
 
     rootPath(): string {
@@ -26,37 +22,31 @@ export class FactController implements Controller {
     }
 
     mount(router: Router): void {
+        router.all('/', validateParams(FactRoute.Params));
         router.get('/', this.findByType.bind(this));
-        router.post('/', this.createForType.bind(this));
+        router.post('/', validateBody(RegisterFactRequest), this.createForType.bind(this));
     }
 
-    async findByType(
-        req: Request<FactRoute.Params, FactDTO, void>,
-        res: Response<FactDTO | null>,
-        next: RequestHandler
-    ): Promise<void> {
+    async findByType({ request, response, params }: RouterContext): Promise<void> {
 
-        const { blackboard, namespace, factType } = req.params;
+        const { blackboard, namespace, factType } = params as FactRoute.Params;
 
         const fact = await this.factService.findByType(factType, blackboard, namespace);
 
         if (fact) {
-            res.status(200).json(factToDTO(fact));
+            response.status = OK;
+            response.body = factToDTO(fact);
         } else {
-            res.status(404).json(null);
+            response.status = NOT_FOUND;
+            response.body = null;
         }
     }
 
-    async createForType(
-        req: Request<FactRoute.Params, void, RegisterFactRequest>,
-        res: Response<void>,
-        next: RequestHandler
-    ): Promise<void> {
+    async createForType({ request, response, params }: RouterContext): Promise<void> {
 
-        const { blackboard, namespace, factType } = req.params;
+        const { blackboard, namespace, factType } = params as FactRoute.Params;
 
-        // TODO: assert provided body attributes
-        const { source, data, score, discoveryDate } = req.body;
+        const { source, data, score, discoveryDate } = request.body as RegisterFactRequest;
 
         await this.factService.indexFact({
             blackboard,
@@ -68,6 +58,7 @@ export class FactController implements Controller {
             discoveryDate
         });
 
-        res.status(202).json();
+        response.status = ACCEPTED;
+        response.body = {};
     }
 }

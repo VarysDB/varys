@@ -1,21 +1,19 @@
-import { Request, RequestHandler, Response, Router } from 'express';
-import { NamespaceDTO, NamespaceRoute } from '@varys/api-model';
-import { LoggerFactory } from '@varys/domain';
+import Router, { RouterContext } from '@koa/router';
+import { OK } from 'http-status-codes';
+import { NamespaceRoute } from '@varys/api-model';
 import { Controller } from '../../../service/Controller';
-import { RepositoryContextFactory } from '../../../service/context/RepositoryContextFactory';
 import { NamespaceService } from '../../../service/NamespaceService';
 import { namespaceToDTO } from '../../../service/DtoUtils';
 import { FactsRootController } from './facts/FactsRootController';
+import { validateParams } from '../../../service/RequestValidator';
+import { FactService } from '../../../service/FactService';
 
 export class NamespacesController implements Controller {
 
-    private readonly namespaceService: NamespaceService;
-
     constructor(
-        private readonly loggerFactory: LoggerFactory,
-        private readonly contextFactory: RepositoryContextFactory
+        private readonly namespaceService: NamespaceService,
+        private readonly factService: FactService
     ) {
-        this.namespaceService = new NamespaceService(contextFactory);
     }
 
     rootPath(): string {
@@ -24,24 +22,22 @@ export class NamespacesController implements Controller {
 
     children(): Controller[] {
         return [
-            new FactsRootController(this.loggerFactory, this.contextFactory)
+            new FactsRootController(this.factService)
         ];
     }
 
     mount(router: Router): void {
+        router.all('/', validateParams(NamespaceRoute.Params));
         router.get('/', this.find.bind(this));
     }
 
-    async find(
-        req: Request<NamespaceRoute.Params, NamespaceDTO, void>,
-        res: Response<NamespaceDTO>,
-        next: RequestHandler
-    ) {
+    async find({ request, response, params }: RouterContext) {
 
-        const { blackboard, namespace: reference } = req.params;
+        const { blackboard, namespace: reference } = params as NamespaceRoute.Params;
 
         const namespace = await this.namespaceService.findByReference(reference, blackboard);
 
-        res.status(200).json(namespaceToDTO(namespace));
+        response.status = OK;
+        response.body = namespaceToDTO(namespace);
     }
 }

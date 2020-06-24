@@ -27,7 +27,7 @@ export class FactPgRepository implements FactRepository {
 
         const dao = this.newDao(fact.blackboard);
 
-        const { id, fingerprint } = dao.calculateId(fact.namespace, fact.type, fact.source, fact.data);
+        const { id, fingerprint } = dao.calculateId(fact.namespace, fact.type, fact.source, fact.data, fact.discoveryDate);
 
         const factEntity = await dao.saveRevision({
             id,

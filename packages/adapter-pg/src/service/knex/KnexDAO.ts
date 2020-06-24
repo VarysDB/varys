@@ -54,7 +54,7 @@ export class KnexDAO<TRecord extends {}> {
 
         const entity = await this.requireOne(where);
 
-        assert(entity, `Could not find entity from ref "${this.table}" with query ${where}`);
+        assert(entity, `Could not find entity from ref "${this.schema}"."${this.table}" with query ${where}`);
 
         return entity;
     }
@@ -122,7 +122,7 @@ export class KnexDAO<TRecord extends {}> {
 
         const { rows } = await this.knex.raw(`
             WITH new_row AS (
-                INSERT INTO ${this.table} (${keys.map(key => '??').join(', ')})
+                INSERT INTO "${this.schema}"."${this.table}" (${keys.map(() => '??').join(', ')})
                 SELECT ${values.map(() => '?').join(', ')}
                 WHERE NOT EXISTS ?
                 RETURNING *
@@ -132,7 +132,7 @@ export class KnexDAO<TRecord extends {}> {
             ...keys,
             ...values,
             selectQuery,
-            returnExisting ? selectQuery : this.knex.raw(`SELECT * FROM ${this.table} WHERE FALSE`)
+            returnExisting ? selectQuery : this.knex.raw(`SELECT * FROM "${this.schema}"."${this.table}" WHERE FALSE`)
         ]);
 
         return rows;

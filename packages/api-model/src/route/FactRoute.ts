@@ -1,9 +1,12 @@
+import { FactValidation } from '../validation';
 import * as FactsRootRoute from './FactsRootRoute';
 
 export const relativePath = '/:type';
 
-export const absolutePath = `${FactsRootRoute.absolutePath}/${relativePath}`;
+export const absolutePath = `${FactsRootRoute.absolutePath}${relativePath}`;
 
-export interface Params extends FactsRootRoute.Params {
-    type: string;
+export class Params extends FactsRootRoute.Params {
+
+    @FactValidation.type()
+    type!: string;
 }

@@ -1,5 +1,5 @@
 import { Logger, LogLevel } from '@varys/domain';
-import winston from 'winston';
+import winston, { createLogger, format, transports } from 'winston';
 
 export class WinstonLogger implements Logger {
 
@@ -9,10 +9,20 @@ export class WinstonLogger implements Logger {
         readonly level: LogLevel,
         readonly name: string
     ) {
-        this.logger = winston.createLogger({
+
+        this.logger = createLogger({
             level: this.winstonLevel(),
             silent: this.level === LogLevel.OFF,
-            transports: [new winston.transports.Console()]
+            format: format.combine(
+                format.splat(),
+                format.label({ label: name }),
+                format.timestamp(),
+                format.ms(),
+                format.printf(info =>
+                    `${info.timestamp} ${info.ms} [${info.level.toUpperCase()}] ${info.label}: ${info.message}`
+                )
+            ),
+            transports: [new transports.Console()]
         });
     }
 

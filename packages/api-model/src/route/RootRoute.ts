@@ -4,5 +4,6 @@ export const absolutePath = relativePath;
 
 export const apiTokenHeader = 'x-api-token';
 
-export interface Params extends Record<string, string> {
+export class Params implements Record<string, string> {
+    [key: string]: string;
 }

@@ -1,5 +1,5 @@
+import { Blackboard } from '@varys/domain';
 import { RepositoryContextFactory } from './context/RepositoryContextFactory';
-import { Blackboard } from '@varys/domain/lib/blackboard';
 
 export class BlackboardService {
 

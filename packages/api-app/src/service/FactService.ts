@@ -1,18 +1,19 @@
-import { Fact, FactIndexingService, FactRegistrationService, LoggerFactory } from '@varys/domain';
+import { Fact, FactIndexingService, FactRegistrationService, LoggerFactory, PubSubAdapter } from '@varys/domain';
 import { RepositoryContextFactory } from './context/RepositoryContextFactory';
 
 export class FactService {
 
     constructor(
         private readonly loggerFactory: LoggerFactory,
-        private readonly contextFactory: RepositoryContextFactory
+        private readonly contextFactory: RepositoryContextFactory,
+        private readonly pubSubAdapter: PubSubAdapter
     ) {
     }
 
     async indexFact(fact: Fact): Promise<void> {
         await this.contextFactory.atomicExec(({ factRepository }) => {
 
-            const registrationService = new FactRegistrationService(this.loggerFactory, factRepository);
+            const registrationService = new FactRegistrationService(this.loggerFactory, factRepository, this.pubSubAdapter);
             const indexingService = new FactIndexingService(registrationService);
 
             return indexingService.indexFact(fact);
@@ -22,7 +23,7 @@ export class FactService {
     async indexFacts(facts: Fact[]): Promise<void> {
         await this.contextFactory.atomicExec(({ factRepository }) => {
 
-            const registrationService = new FactRegistrationService(this.loggerFactory, factRepository);
+            const registrationService = new FactRegistrationService(this.loggerFactory, factRepository, this.pubSubAdapter);
             const indexingService = new FactIndexingService(registrationService);
 
             return indexingService.indexFacts(facts);

@@ -9,7 +9,7 @@
  * NONE: placeholder only, needs to be overriden
  */
 export enum FactScoreDTO {
-    RICK_AND_MORTY = Number.MAX_SAFE_INTEGER,
+    RICK_AND_MORTY = 32767,
     ADMIN_OVERRIDE = 1000,
     // 900 is reserved for MANAGER_OVERRIDE
     USER_OVERRIDE = 800,

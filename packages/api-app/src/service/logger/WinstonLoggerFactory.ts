@@ -1,4 +1,5 @@
 import { Logger, LoggerContext, LoggerFactory, LogLevel } from '@varys/domain';
+import debug from 'debug';
 import { WinstonLogger } from './WinstonLogger';
 
 export class WinstonLoggerFactory implements LoggerFactory {
@@ -7,7 +8,12 @@ export class WinstonLoggerFactory implements LoggerFactory {
     }
 
     getLogger(context: LoggerContext): Logger {
-        return new WinstonLogger(this.level, this.nameFromContext(context));
+
+        const name = this.nameFromContext(context);
+
+        const isDebug = debug(`varys:${name}`).enabled;
+
+        return new WinstonLogger(isDebug ? LogLevel.DEBUG : this.level, name);
     }
 
     private nameFromContext(context: LoggerContext): string {
