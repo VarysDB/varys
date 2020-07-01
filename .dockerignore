@@ -1,0 +1,13 @@
+node_modules/
+**/node_modules/
+output*.log
+**/dist/
+knf-docs/
+uploads/
+var/
+package-lock.json
+**/package-lock.json
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+.git
+.gitignore

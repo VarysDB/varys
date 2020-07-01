@@ -1,5 +1,5 @@
 import { FactRegistrationService } from './FactRegistrationService';
-import { Fact } from '../model/fact';
+import { Fact } from '../model/Fact';
 
 export class FactIndexingService {
 

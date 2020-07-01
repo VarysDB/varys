@@ -17,6 +17,13 @@
     "node": "^14.0.0",
     "npm": "^6.0.0"
   },
+  "scripts": {
+    "clean": "lerna clean --yes",
+    "bootstrap": "lerna bootstrap",
+    "bootstrap:prod": "lerna bootstrap -- --production --no-optional",
+    "build": "lerna run build --stream",
+    "start:api-app": "lerna run start --scope=@varys/api-app"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/VarysDB/varys.git"
