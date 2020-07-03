@@ -1,6 +1,6 @@
 {
   "name": "@varys/api-app",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "RESTful application",
   "private": false,
   "main": "lib/index.js",
@@ -57,8 +57,8 @@
     "@koa/router": "^9.0.1",
     "@types/morgan": "^1.9.1",
     "@varys/adapter-pg": "^0.1.0",
-    "@varys/adapter-sns-http": "^0.1.0",
-    "@varys/api-model": "^0.1.0",
+    "@varys/adapter-sns-http": "^0.1.1",
+    "@varys/api-model": "^0.1.1",
     "@varys/domain": "^0.1.0",
     "compression": "^1.7.4",
     "debug": "^4.1.1",
