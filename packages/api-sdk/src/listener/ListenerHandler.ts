@@ -1,5 +1,5 @@
-import { Fact } from '@varys/domain';
+import { FactDTO } from '@varys/api-model';
 
 export interface ListenerHandler {
-    (fact: Fact): Promise<void>;
+    (fact: FactDTO): Promise<void>;
 }

@@ -1,7 +1,7 @@
 import { HttpListener, MessageResult } from './HttpListener';
-import { Fact } from '@varys/domain';
 import { SubscriptionClient } from '../client/SubscriptionClient';
 import { IncomingHttpHeaders } from 'http';
+import { ListenerHandler } from './ListenerHandler';
 
 export interface SnsSubscriptionConfirmation {
     Type: 'SubscriptionConfirmation';
@@ -37,7 +37,7 @@ export class SnsHttpListener implements HttpListener {
 
     constructor(
         private readonly client: SubscriptionClient,
-        private readonly handleFact: (fact: Fact) => Promise<void>
+        private readonly handleFact: ListenerHandler
     ) {
     }
 
