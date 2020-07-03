@@ -1,11 +1,12 @@
 import { Fact, Logger, LoggerFactory, PublishResult, PubSubAdapter, SubscriptionAttributes } from '@varys/domain';
 import { SNS } from 'aws-sdk';
 
-export interface SnsHttpAdapterConfig {
+export interface SnsHttpAdapterConfig<T> {
     topicAttributeName: string;
     factsTopicArn: string;
     factsDLQArn: string;
     awsConfig: AWSConfig;
+    transformFact: (fact: Fact) => T;
 }
 
 export interface AWSConfig {
@@ -15,7 +16,7 @@ export interface AWSConfig {
     endpoint?: string;
 }
 
-export class SnsHttpAdapter implements PubSubAdapter {
+export class SnsHttpAdapter<T extends {}> implements PubSubAdapter {
 
     private readonly $log: Logger;
 
@@ -23,7 +24,7 @@ export class SnsHttpAdapter implements PubSubAdapter {
 
     constructor(
         loggerFactory: LoggerFactory,
-        private readonly config: SnsHttpAdapterConfig
+        private readonly config: SnsHttpAdapterConfig<T>
     ) {
         this.$log = loggerFactory.getLogger(this);
 
@@ -43,7 +44,7 @@ export class SnsHttpAdapter implements PubSubAdapter {
         this.$log.debug('About to publish fact', fact);
 
         const { MessageId, $response } = await this.snsClient.publish({
-            Message: JSON.stringify(fact),
+            Message: JSON.stringify(this.config.transformFact(fact)),
             MessageAttributes: {
                 [this.config.topicAttributeName]: {
                     DataType: 'String',

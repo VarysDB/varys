@@ -1,5 +1,5 @@
-import { FactDTO } from '@varys/api-model';
+import { FactDiscoveryDTO } from '@varys/api-model';
 
 export interface ListenerHandler {
-    (fact: FactDTO): Promise<void>;
+    (fact: FactDiscoveryDTO): Promise<void>;
 }

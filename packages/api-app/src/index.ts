@@ -25,6 +25,8 @@ import {
 import { FactService } from './service/FactService';
 import { NamespaceService } from './service/NamespaceService';
 import { BlackboardService } from './service/BlackboardService';
+import { Fact } from '@varys/domain';
+import { FactDiscoveryDTO } from '@varys/api-model';
 
 const app = new Koa();
 
@@ -71,8 +73,18 @@ const pubSubAdapter = new SnsHttpAdapter(loggerFactory, {
     awsConfig: {
         region: AWS_REGION,
         accessKeyId: AWS_ACCESS_KEY_ID,
-        secretAccessKey: AWS_SECRET_ACCESS_KEY,
-        // endpoint: 'http://localhost:4575'
+        secretAccessKey: AWS_SECRET_ACCESS_KEY
+    },
+    transformFact(fact: Fact): FactDiscoveryDTO {
+        return {
+            blackboard: fact.blackboard,
+            reference: fact.namespace,
+            type: fact.type,
+            source: fact.source,
+            data: fact.data,
+            score: fact.score,
+            discoveryDate: fact.discoveryDate
+        };
     }
 });
 
