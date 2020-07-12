@@ -38,7 +38,7 @@ export class FactController implements Controller {
             response.body = factToDTO(fact);
         } else {
             response.status = NOT_FOUND;
-            response.body = null;
+            response.body = {};
         }
     }
 

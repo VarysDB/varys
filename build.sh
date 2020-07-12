@@ -1,20 +1,15 @@
 #!/bin/bash
 
-VERSION=$1
-USAGE="Usage: ./build.sh <VERSION>"
+PACKAGE=$1
+USAGE="Usage: ./build.sh <PACKAGE>"
 
-if [ -z "$VERSION" ]; then
-  echo "Error: Missing argument VERSION"
+if [ -z "$PACKAGE" ]; then
+  echo "Error: Missing argument PACKAGE"
   echo "$USAGE"
   exit 1
 fi
 
-PACKAGES=(
-  api-app
-)
+echo "Building package $PACKAGE"
+docker build -t "varys/$PACKAGE" -f "packages/$PACKAGE/Dockerfile" . || exit 1
 
-for p in "${PACKAGES[@]}"; do
-  TAG="varys/$p:$VERSION"
-  echo "Building package $TAG"
-  docker build -t "$TAG" -f "packages/$p/Dockerfile" .
-done
+#!/bin/bash

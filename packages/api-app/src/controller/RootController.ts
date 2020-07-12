@@ -53,9 +53,9 @@ export class RootController implements Controller {
             }
         });
 
-        router.use(this.apiTokenHandler.bind(this));
-
         router.get('/ping', this.ping.bind(this));
+
+        router.use(this.apiTokenHandler.bind(this));
     }
 
     async apiTokenHandler({ request, response }: RouterContext, next: Next): Promise<void> {
@@ -64,7 +64,7 @@ export class RootController implements Controller {
 
         if (apiToken !== this.apiToken) {
             response.status = UNAUTHORIZED;
-            response.body = null;
+            response.body = {};
         } else {
             await next();
         }
