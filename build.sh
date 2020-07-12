@@ -18,5 +18,3 @@ for p in "${PACKAGES[@]}"; do
   echo "Building package $TAG"
   docker build -t "$TAG" -f "packages/$p/Dockerfile" .
 done
-
-git tag "$VERSION"
