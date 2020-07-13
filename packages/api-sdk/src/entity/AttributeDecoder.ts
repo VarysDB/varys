@@ -92,6 +92,18 @@ export class AttributeDecoder {
         return this.asNullableType<object>(data, typeof {});
     }
 
+    array<T = any>(type: string, defaultValue?: T[]): T[] {
+        const data = this.get(type, defaultValue);
+
+        return this.asType<T[]>(data, typeof []);
+    }
+
+    arrayOrNull<T = any>(type: string, defaultValue?: T[] | null): T[] | null {
+        const data = this.get(type, defaultValue);
+
+        return this.asNullableType<T[]>(data, typeof []);
+    }
+
     date(type: string, defaultValue?: string): Date {
 
         const data = this.get(type, defaultValue);
