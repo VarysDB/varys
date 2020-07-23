@@ -1,4 +1,4 @@
-import Varys, { AttributeDecoder, AttributeEncoder, FactDTO, HttpListener, NamespaceDTO } from '@varys/api-sdk';
+import Varys, { AttributeDecoder, AttributeEncoder, FactDTO, NamespaceDTO } from '@varys/api-sdk';
 import assert from 'assert';
 import express from 'express';
 
@@ -54,7 +54,12 @@ const entityClient = varys.entity<TestEntity>(BLACKBOARD, {
     }
 });
 
-let subscription: HttpListener | null = null;
+const subscription = varys.listener().toAll({
+    blackboard: BLACKBOARD,
+    async handler(fact: FactDTO) {
+        console.info(fact);
+    }
+});
 
 async function sendFact() {
 
@@ -76,13 +81,7 @@ async function subscribe(endpoint: string) {
 
     await blackboardClient.createBlackboard();
 
-    subscription = await varys.listener().toAll({
-        blackboard: BLACKBOARD,
-        endpoint,
-        async handler(fact: FactDTO) {
-            console.info(fact);
-        }
-    });
+    await subscription.subscribe(endpoint);
 }
 
 const app = express();
@@ -107,7 +106,7 @@ app.get('/subscribe', (req, res) => {
 app.post('/listen', (req, res) => {
     console.info('POST /listen');
 
-    subscription!.handle(req.body, req.headers)
+    subscription.handle(req.body, req.headers)
         .then(({ status, result }) => res.status(status).send(result));
 });
 

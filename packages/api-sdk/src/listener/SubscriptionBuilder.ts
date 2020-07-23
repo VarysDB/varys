@@ -4,7 +4,6 @@ import { HttpListener } from './HttpListener';
 
 export interface SubscriptionParams {
     blackboard: string;
-    endpoint: string;
     handler: ListenerHandler;
 }
 
@@ -32,7 +31,7 @@ export class SubscriptionBuilder {
         return this.build(`${reference}:${type}`, params);
     }
 
-    private build(subtopic: string, { blackboard, endpoint, handler }: SubscriptionParams): HttpListener {
+    private build(subtopic: string, { blackboard, handler }: SubscriptionParams): HttpListener {
         return this.factory.forType(this.type, `${blackboard}:${subtopic}`, handler);
     }
 }
