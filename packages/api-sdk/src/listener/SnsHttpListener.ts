@@ -37,13 +37,14 @@ export class SnsHttpListener implements HttpListener {
 
     constructor(
         private readonly client: SubscriptionClient,
+        private readonly topic: string,
         private readonly handleFact: ListenerHandler
     ) {
     }
 
-    async subscribe(topic: string, endpoint: string): Promise<void> {
+    async subscribe(endpoint: string): Promise<void> {
         await this.client.subscribe({
-            topic,
+            topic: this.topic,
             endpoint
         });
     }

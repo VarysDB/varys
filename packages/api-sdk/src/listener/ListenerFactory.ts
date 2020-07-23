@@ -10,10 +10,10 @@ export class ListenerFactory {
     constructor(private readonly client: SubscriptionClient) {
     }
 
-    forType(type: ListenerType, handler: ListenerHandler): HttpListener {
+    forType(type: ListenerType, topic: string, handler: ListenerHandler): HttpListener {
         switch (type) {
             case 'sns':
-                return new SnsHttpListener(this.client, handler);
+                return new SnsHttpListener(this.client, topic, handler);
             default:
                 throw new Error(`HTTP listener ${type} is not available`);
         }

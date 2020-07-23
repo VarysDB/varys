@@ -34,10 +34,6 @@ export class SubscriptionBuilder {
 
     private async build(subtopic: string, { blackboard, endpoint, handler }: SubscriptionParams): Promise<HttpListener> {
 
-        const listener = this.factory.forType(this.type, handler);
-
-        await listener.subscribe(`${blackboard}:${subtopic}`, endpoint);
-
-        return listener;
+        return this.factory.forType(this.type, `${blackboard}:${subtopic}`, handler);
     }
 }

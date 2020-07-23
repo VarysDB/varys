@@ -8,7 +8,7 @@ export interface MessageResult {
 
 export interface HttpListener {
 
-    subscribe(topic: string, endpoint: string): Promise<void>;
+    subscribe(endpoint: string): Promise<void>;
 
     handle(message: string, headers: IncomingHttpHeaders): Promise<MessageResult>;
 }
