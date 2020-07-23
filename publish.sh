@@ -36,7 +36,7 @@ PACKAGES=(
 for p in "${PACKAGES[@]}"; do
   ./build.sh "$p" || exit 1
 
-  HUB_RELEASE="$HUB_ROOT/$p:$VERSION"
+  HUB_RELEASE="$HUB_ROOT/varys/$p:$VERSION"
 
   docker tag "varys/$p" "$HUB_RELEASE"
   docker push "$HUB_RELEASE"

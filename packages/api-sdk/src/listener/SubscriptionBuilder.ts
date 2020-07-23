@@ -16,24 +16,23 @@ export class SubscriptionBuilder {
     ) {
     }
 
-    toAll(params: SubscriptionParams): Promise<HttpListener> {
+    toAll(params: SubscriptionParams): HttpListener {
         return this.build('*', params);
     }
 
-    toFact(factType: string, params: SubscriptionParams): Promise<HttpListener> {
+    toFact(factType: string, params: SubscriptionParams): HttpListener {
         return this.build(`*:${factType}`, params);
     }
 
-    toReference(reference: string, params: SubscriptionParams): Promise<HttpListener> {
+    toReference(reference: string, params: SubscriptionParams): HttpListener {
         return this.build(`${reference}:*`, params);
     }
 
-    toReferenceAndType(reference: string, type: string, params: SubscriptionParams): Promise<HttpListener> {
+    toReferenceAndType(reference: string, type: string, params: SubscriptionParams): HttpListener {
         return this.build(`${reference}:${type}`, params);
     }
 
-    private async build(subtopic: string, { blackboard, endpoint, handler }: SubscriptionParams): Promise<HttpListener> {
-
+    private build(subtopic: string, { blackboard, endpoint, handler }: SubscriptionParams): HttpListener {
         return this.factory.forType(this.type, `${blackboard}:${subtopic}`, handler);
     }
 }
