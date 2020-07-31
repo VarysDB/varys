@@ -43,7 +43,7 @@ export class HttpClient {
             body: body ? JSON.stringify(body) : undefined
         });
 
-        if (response.status >= 200 || response.status <= 299) {
+        if (response.status >= 200 && response.status <= 299) {
             return {
                 data: await response.json() as R,
                 error: false,

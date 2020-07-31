@@ -22,7 +22,7 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "start": "node .",
-    "start:ts": "ts-node src/index.ts",
+    "start:ts": "ts-node --transpile-only src/index.ts",
     "watch": "nodemon --watch .. -e ts,tsx --ignore 'src/frontend' --ignore '*.spec.ts*' --ignore '*Test.ts*' --exec 'npm run build'",
     "lint:check": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint --fix \"src/**/*.{ts,tsx,jsx}\"",
