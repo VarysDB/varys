@@ -1,6 +1,6 @@
 {
   "name": "@varys/domain",
-  "version": "0.2.0-alpha.4",
+  "version": "0.2.0",
   "description": "Core libraries",
   "private": false,
   "main": "lib/index.js",
