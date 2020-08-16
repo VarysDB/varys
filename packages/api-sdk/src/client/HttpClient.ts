@@ -7,11 +7,25 @@ export interface HttpClientConfig {
     apiToken: string;
 }
 
-export interface HttpClientResponse<T> {
-    data: T | null;
-    error: boolean;
+export interface HttpClientSuccessResponse<T> {
+    data: T;
+    error: false;
+    status: number;
+    body(): T;
+}
+
+export interface HttpClientFailureResponse<T> {
+    error: true;
+    message: string;
     status: number;
     // TODO: error message
+    body(): T;
+}
+
+export type HttpClientResponse<T> = HttpClientSuccessResponse<T> | HttpClientFailureResponse<T>;
+
+interface ErrorBody {
+    message: string;
 }
 
 export class HttpClient {
@@ -34,7 +48,9 @@ export class HttpClient {
             return params[key];
         });
 
-        const response = await fetch(`${this.apiUrl}${interpolatedPath}`, {
+        const url = `${this.apiUrl}${interpolatedPath}`;
+
+        const response = await fetch(url, {
             method,
             headers: {
                 'Content-Type': 'application/json',
@@ -47,14 +63,23 @@ export class HttpClient {
             return {
                 data: await response.json() as R,
                 error: false,
-                status: response.status
+                status: response.status,
+                body(): R {
+                    return this.data;
+                }
             };
         }
 
+        const data = await response.json() as ErrorBody;
+
         return {
-            data: null,
             error: true,
-            status: response.status
+            message: data.message,
+            status: response.status,
+            body(): R {
+                // TODO: throw proper error class
+                throw new Error(`Failed to ${method} ${url}: [${this.status}] ${this.message}`);
+            }
         };
     }
 

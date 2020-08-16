@@ -3,7 +3,6 @@ import Router, { RouterContext } from '@koa/router';
 import bodyParser from 'koa-bodyparser';
 import compress from 'koa-compress';
 import morgan from 'koa-morgan';
-import { OK, UNAUTHORIZED } from 'http-status-codes';
 import { PubSubAdapter } from '@varys/domain';
 import { RootRoute } from '@varys/api-model';
 import { Controller } from '../service/Controller';
@@ -12,6 +11,7 @@ import { SubscriptionController } from './SubscriptionController';
 import { BlackboardService } from '../service/BlackboardService';
 import { NamespaceService } from '../service/NamespaceService';
 import { FactService } from '../service/FactService';
+import { error, ok, unauthorized } from '../service/JsonResponse';
 
 export class RootController implements Controller {
 
@@ -44,10 +44,9 @@ export class RootController implements Controller {
             try {
                 await next();
             } catch (err) {
-                ctx.status = err.status || 500;
-                ctx.body = {
-                    error: err.message
-                };
+                console.error('Uncaught error:', err);
+
+                error(ctx.response, err);
 
                 ctx.app.emit('error', err, ctx);
             }
@@ -63,17 +62,15 @@ export class RootController implements Controller {
         const apiToken = request.header[RootRoute.apiTokenHeader];
 
         if (apiToken !== this.apiToken) {
-            response.status = UNAUTHORIZED;
-            response.body = {};
+            unauthorized(response);
         } else {
             await next();
         }
     }
 
     async ping({ request, response }: RouterContext): Promise<void> {
-        response.status = OK;
-        response.body = {
+        ok(response, {
             ping: 'pong'
-        };
+        });
     }
 }

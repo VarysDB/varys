@@ -1,9 +1,9 @@
 import Router, { RouterContext } from '@koa/router';
-import { OK } from 'http-status-codes';
 import { PubSubAdapter } from '@varys/domain';
 import { SubscriptionConfirmationRequest, SubscriptionRequest, SubscriptionsRootRoute } from '@varys/api-model';
 import { Controller } from '../service/Controller';
 import { validateBody } from '../service/RequestValidator';
+import { accepted, created } from '../service/JsonResponse';
 
 export class SubscriptionController implements Controller {
 
@@ -31,8 +31,7 @@ export class SubscriptionController implements Controller {
 
         await this.pubSubAdapter.subscribe(topic, { endpoint });
 
-        response.status = OK;
-        response.body = {};
+        accepted<null>(response, null);
     }
 
     async confirmSubscription({ request, response }: RouterContext): Promise<void> {
@@ -41,7 +40,6 @@ export class SubscriptionController implements Controller {
 
         await this.pubSubAdapter.confirmSubscription(token);
 
-        response.status = OK;
-        response.body = {};
+        created<null>(response, null);
     }
 }

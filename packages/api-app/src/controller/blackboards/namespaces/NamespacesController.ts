@@ -1,12 +1,12 @@
 import Router, { RouterContext } from '@koa/router';
-import { OK } from 'http-status-codes';
-import { NamespaceRoute } from '@varys/api-model';
+import { NamespaceDTO, NamespaceRoute } from '@varys/api-model';
 import { Controller } from '../../../service/Controller';
 import { NamespaceService } from '../../../service/NamespaceService';
 import { namespaceToDTO } from '../../../service/DtoUtils';
 import { FactsRootController } from './facts/FactsRootController';
 import { validateParams } from '../../../service/RequestValidator';
 import { FactService } from '../../../service/FactService';
+import { ok } from '../../../service/JsonResponse';
 
 export class NamespacesController implements Controller {
 
@@ -37,7 +37,6 @@ export class NamespacesController implements Controller {
 
         const namespace = await this.namespaceService.findByReference(reference, blackboard);
 
-        response.status = OK;
-        response.body = namespaceToDTO(namespace);
+        ok<NamespaceDTO>(response, namespaceToDTO(namespace));
     }
 }

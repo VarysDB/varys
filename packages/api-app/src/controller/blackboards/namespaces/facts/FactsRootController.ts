@@ -1,11 +1,12 @@
 import Router, { RouterContext } from '@koa/router';
-import { ACCEPTED, OK } from 'http-status-codes';
-import { FactsRootRoute, RegisterFactBatchRequest } from '@varys/api-model';
+import { FactDTO, FactsRootRoute, RegisterFactBatchRequest } from '@varys/api-model';
 import { Controller } from '../../../../service/Controller';
 import { FactService } from '../../../../service/FactService';
 import { FactController } from './FactController';
 import { factToDTO } from '../../../../service/DtoUtils';
 import { validateBody, validateParams } from '../../../../service/RequestValidator';
+import { accepted, ok } from '../../../../service/JsonResponse';
+import { Fact } from '@varys/domain';
 
 export class FactsRootController implements Controller {
 
@@ -36,8 +37,7 @@ export class FactsRootController implements Controller {
 
         const facts = await this.factService.findAll(blackboard, namespace);
 
-        response.status = OK;
-        response.body = facts.map(factToDTO);
+        ok<FactDTO[]>(response, facts.map(factToDTO));
     }
 
     async createMany({ request, response, params }: RouterContext): Promise<void> {
@@ -46,7 +46,7 @@ export class FactsRootController implements Controller {
 
         const { source, discoveryDate, facts } = request.body as RegisterFactBatchRequest;
 
-        await this.factService.indexFacts(facts.map(fact => ({
+        const indexedFacts: Fact[] = facts.map(fact => ({
             blackboard,
             namespace,
             type: fact.type,
@@ -54,9 +54,10 @@ export class FactsRootController implements Controller {
             data: fact.data,
             score: fact.score,
             discoveryDate
-        })));
+        }));
 
-        response.status = ACCEPTED;
-        response.body = {};
+        await this.factService.indexFacts(indexedFacts);
+
+        accepted<FactDTO[]>(response, indexedFacts);
     }
 }

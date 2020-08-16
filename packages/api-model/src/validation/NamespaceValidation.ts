@@ -1,3 +1,4 @@
 import * as jf from 'joiful';
 
-export const reference = () => jf.string().trim().lowercase().token().required();
+// TODO: maybe also support other characters like ./$
+export const reference = () => jf.string().trim().regex(/^[a-zA-Z0-9_\-]+$/).required();

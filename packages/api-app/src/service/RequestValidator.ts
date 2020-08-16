@@ -2,6 +2,7 @@ import { Next } from 'koa';
 import Router, { RouterContext } from '@koa/router';
 import * as jf from 'joiful';
 import { Constructor } from 'joiful/core';
+import { badRequest } from './JsonResponse';
 
 export function validateParams(classConstructor: Constructor<any>): Router.Middleware {
     return validate(classConstructor, ctx => ctx.params, (ctx, value) => ctx.params = value);
@@ -19,7 +20,7 @@ function validate(classConstructor: Constructor<any>, getter: (ctx: RouterContex
         });
 
         if (error) {
-            ctx.throw(400, error.message);
+            badRequest(ctx.response, error.message);
         } else {
             setter(ctx, value);
             await next();

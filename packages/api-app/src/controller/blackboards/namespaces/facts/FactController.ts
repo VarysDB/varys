@@ -1,10 +1,11 @@
 import Router, { RouterContext } from '@koa/router';
-import { ACCEPTED, NOT_FOUND, OK } from 'http-status-codes';
-import { FactRoute, RegisterFactRequest } from '@varys/api-model';
+import { FactDTO, FactRoute, RegisterFactRequest } from '@varys/api-model';
 import { Controller } from '../../../../service/Controller';
 import { FactService } from '../../../../service/FactService';
 import { factToDTO } from '../../../../service/DtoUtils';
 import { validateBody, validateParams } from '../../../../service/RequestValidator';
+import { accepted, notFound, ok } from '../../../../service/JsonResponse';
+import { Fact } from '@varys/domain';
 
 export class FactController implements Controller {
 
@@ -34,11 +35,9 @@ export class FactController implements Controller {
         const fact = await this.factService.findByType(factType, blackboard, namespace);
 
         if (fact) {
-            response.status = OK;
-            response.body = factToDTO(fact);
+            ok<FactDTO>(response, factToDTO(fact));
         } else {
-            response.status = NOT_FOUND;
-            response.body = {};
+            notFound(response, `Could not find fact using params ${JSON.stringify(params)}`);
         }
     }
 
@@ -48,7 +47,7 @@ export class FactController implements Controller {
 
         const { source, data, score, discoveryDate } = request.body as RegisterFactRequest;
 
-        await this.factService.indexFact({
+        const fact: Fact = {
             blackboard,
             namespace,
             type: factType,
@@ -56,9 +55,10 @@ export class FactController implements Controller {
             data,
             score,
             discoveryDate
-        });
+        };
 
-        response.status = ACCEPTED;
-        response.body = {};
+        await this.factService.indexFact(fact);
+
+        accepted<FactDTO>(response, factToDTO(fact));
     }
 }

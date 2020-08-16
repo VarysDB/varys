@@ -20,16 +20,16 @@ export class BlackboardClient {
     ) {
     }
 
-    registerFact(namespace: string, type: string, payload: RegisterFactRequest): Promise<HttpClientResponse<void>> {
-        return this.client.post<FactRoute.Params, RegisterFactRequest, void>(FactRoute.absolutePath, {
+    registerFact(namespace: string, type: string, payload: RegisterFactRequest): Promise<HttpClientResponse<FactDTO>> {
+        return this.client.post<FactRoute.Params, RegisterFactRequest, FactDTO>(FactRoute.absolutePath, {
             blackboard: this.blackboard,
             namespace,
             type
         }, payload);
     }
 
-    registerFactsBatch(namespace: string, payload: RegisterFactBatchRequest): Promise<HttpClientResponse<void>> {
-        return this.client.post<FactsRootRoute.Params, RegisterFactBatchRequest, void>(FactsRootRoute.absolutePath, {
+    registerFactsBatch(namespace: string, payload: RegisterFactBatchRequest): Promise<HttpClientResponse<FactDTO[]>> {
+        return this.client.post<FactsRootRoute.Params, RegisterFactBatchRequest, FactDTO[]>(FactsRootRoute.absolutePath, {
             blackboard: this.blackboard,
             namespace
         }, payload);

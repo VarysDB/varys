@@ -8,11 +8,11 @@ export class SubscriptionClient {
     ) {
     }
 
-    subscribe(payload: SubscriptionRequest): Promise<HttpClientResponse<void>> {
-        return this.client.post<SubscriptionsRootRoute.Params, SubscriptionRequest, void>(SubscriptionsRootRoute.absolutePath, {}, payload);
+    subscribe(payload: SubscriptionRequest): Promise<HttpClientResponse<null>> {
+        return this.client.post<SubscriptionsRootRoute.Params, SubscriptionRequest, null>(SubscriptionsRootRoute.absolutePath, {}, payload);
     }
 
-    confirmSubscription(payload: SubscriptionConfirmationRequest): Promise<HttpClientResponse<void>> {
-        return this.client.put<SubscriptionsRootRoute.Params, SubscriptionConfirmationRequest, void>(SubscriptionsRootRoute.absolutePath, {}, payload);
+    confirmSubscription(payload: SubscriptionConfirmationRequest): Promise<HttpClientResponse<null>> {
+        return this.client.put<SubscriptionsRootRoute.Params, SubscriptionConfirmationRequest, null>(SubscriptionsRootRoute.absolutePath, {}, payload);
     }
 }

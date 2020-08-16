@@ -1,5 +1,4 @@
 import Router, { RouterContext } from '@koa/router';
-import { CREATED } from 'http-status-codes';
 import { BlackboardRoute } from '@varys/api-model';
 import { Controller } from '../../service/Controller';
 import { NamespacesController } from './namespaces/NamespacesController';
@@ -7,6 +6,7 @@ import { BlackboardService } from '../../service/BlackboardService';
 import { validateParams } from '../../service/RequestValidator';
 import { NamespaceService } from '../../service/NamespaceService';
 import { FactService } from '../../service/FactService';
+import { created } from '../../service/JsonResponse';
 
 export class BlackboardController implements Controller {
 
@@ -40,7 +40,6 @@ export class BlackboardController implements Controller {
             name: blackboard
         });
 
-        response.status = CREATED;
-        response.body = {};
+        created<null>(response, null);
     }
 }
