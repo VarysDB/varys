@@ -22,7 +22,7 @@
     "bootstrap": "lerna bootstrap",
     "bootstrap:prod": "lerna bootstrap -- --production --no-optional",
     "build": "lerna run build --stream",
-    "start:api-app": "lerna run start --scope=@varys/api-app"
+    "start:api-app": "lerna run start --stream --scope=@varys/api-app"
   },
   "repository": {
     "type": "git",
