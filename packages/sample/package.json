@@ -1,6 +1,6 @@
 {
   "name": "@varys/sample",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Sample application",
   "private": true,
   "main": "lib/index.js",
@@ -54,10 +54,13 @@
   },
   "homepage": "https://github.com/VarysDB/varys#readme",
   "dependencies": {
-    "@varys/api-sdk": "^0.2.1",
-    "express": "^4.17.1"
+    "@varys/api-sdk": "^0.2.2",
+    "express": "^4.17.1",
+    "tslib": "^2.0.1"
   },
   "devDependencies": {
-    "@types/express": "^4.17.6"
+    "@types/express": "^4.17.6",
+    "@types/node": "^14.6.0",
+    "typescript": "3.9.6"
   }
 }

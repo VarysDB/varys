@@ -1,6 +1,6 @@
 {
   "name": "@varys/adapter-pg",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Database access implementations",
   "private": false,
   "main": "lib/index.js",
@@ -53,7 +53,7 @@
   },
   "homepage": "https://github.com/VarysDB/varys#readme",
   "dependencies": {
-    "@varys/domain": "^0.2.1",
+    "@varys/domain": "^0.2.2",
     "knex": "^0.21.1",
     "tslib": "^2.0.0",
     "uuid": "^8.0.0"
