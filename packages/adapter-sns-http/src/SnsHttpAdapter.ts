@@ -1,12 +1,17 @@
 import { Fact, Logger, LoggerFactory, PublishResult, PubSubAdapter, SubscriptionAttributes } from '@varys/domain';
 import { SNS } from 'aws-sdk';
 
+export enum SnsHttpAdapterProtocol {
+    HTTP = 'http',
+    HTTPS = 'https'
+}
+
 export interface SnsHttpAdapterConfig<T> {
     topicAttributeName: string;
     factsTopicArn: string;
     factsDLQArn: string;
     awsConfig: AWSConfig;
-    protocol: 'http' | 'https';
+    protocol: SnsHttpAdapterProtocol;
     transformFact: (fact: Fact) => T;
 }
 

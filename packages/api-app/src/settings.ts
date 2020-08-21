@@ -1,5 +1,6 @@
 import { $enum } from 'ts-enum-util';
 import { LogLevel } from '@varys/domain';
+import { SnsHttpAdapterProtocol } from '@varys/adapter-sns-http';
 import { env } from './service/Env';
 
 export const PORT = env.int('PORT', 8000);
@@ -34,4 +35,4 @@ export const AWS_SNS_TOPIC_ATTRIBUTE_NAME = env.string('AWS_SNS_TOPIC_ATTRIBUTE_
 
 export const AWS_SNS_ENDPOINT = env.string('AWS_SNS_ENDPOINT', '');
 
-export const AWS_SNS_SUBSCRIPTION_PROTOCOL = env.string('AWS_SNS_SUBSCRIPTION_PROTOCOL', 'https');
+export const AWS_SNS_SUBSCRIPTION_PROTOCOL: SnsHttpAdapterProtocol = $enum(SnsHttpAdapterProtocol).getValueOrThrow(env.string('AWS_SNS_SUBSCRIPTION_PROTOCOL', 'HTTPS').toUpperCase());
