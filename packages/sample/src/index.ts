@@ -18,6 +18,8 @@ const REFERENCE = 'abc123';
 
 const SOURCE = 'sample-app';
 
+const ENDPOINT = 'https://c15d6bccd515.ngrok.io';
+
 const PORT = 4000;
 
 const API_TOKEN = process.env['API_TOKEN'];
@@ -54,60 +56,67 @@ const entityClient = varys.entity<TestEntity>(BLACKBOARD, {
     }
 });
 
-const subscription = varys.listener().toAll({
-    blackboard: BLACKBOARD,
-    async handler(fact: FactDTO) {
-        console.info(fact);
+async function main() {
+    const subscription = await varys.listener().toAll({
+        blackboard: BLACKBOARD,
+        async handler(fact: FactDTO) {
+            console.info(fact);
+        }
+    });
+
+    async function sendFact() {
+
+        console.info('pre', await entityClient.find(REFERENCE));
+
+        const entity: TestEntity = {
+            name: `Danilo (${Math.round(Math.random() * 10)})`,
+            age: 24 + Math.round(Math.random() * 10 - 5)
+        };
+
+        console.info('entity', entity);
+
+        await entityClient.save(REFERENCE, entity, SOURCE, new Date());
+
+        console.info('post', await entityClient.find(REFERENCE));
     }
-});
 
-async function sendFact() {
+    async function subscribe(endpoint: string) {
 
-    console.info('pre', await entityClient.find(REFERENCE));
+        await blackboardClient.createBlackboard();
 
-    const entity: TestEntity = {
-        name: `Danilo (${Math.round(Math.random() * 10)})`,
-        age: 24 + Math.round(Math.random() * 10 - 5)
-    };
+        await subscription.subscribe(endpoint);
+    }
 
-    console.info('entity', entity);
+    const app = express();
 
-    await entityClient.save(REFERENCE, entity, SOURCE, new Date());
+    app.use(express.json());
+    app.use(express.text());
 
-    console.info('post', await entityClient.find(REFERENCE));
+    app.get('/', (req, res) => {
+        console.info('GET /');
+
+        sendFact()
+            .then(() => res.send());
+    });
+
+    app.get('/subscribe', (req, res) => {
+        console.info('GET /listen');
+
+        subscribe(`${ENDPOINT}/listen`)
+            .then(() => res.send());
+    });
+
+    app.post('/listen', (req, res) => {
+        console.info('POST /listen');
+
+        console.log(req.headers);
+        console.log(typeof req.body, req.body);
+
+        subscription.handle(req.body, req.headers)
+            .then(({ status, result }) => res.status(status).send(result));
+    });
+
+    app.listen(PORT, () => 'Listening');
 }
 
-async function subscribe(endpoint: string) {
-
-    await blackboardClient.createBlackboard();
-
-    await subscription.subscribe(endpoint);
-}
-
-const app = express();
-
-app.use(express.json());
-app.use(express.text());
-
-app.get('/', (req, res) => {
-    console.info('GET /');
-
-    sendFact()
-        .then(() => res.send());
-});
-
-app.get('/subscribe', (req, res) => {
-    console.info('GET /listen');
-
-    subscribe(`https://0625e4f89c5e.ngrok.io/listen`)
-        .then(() => res.send());
-});
-
-app.post('/listen', (req, res) => {
-    console.info('POST /listen');
-
-    subscription.handle(req.body, req.headers)
-        .then(({ status, result }) => res.status(status).send(result));
-});
-
-app.listen(PORT, () => 'Listening');
+main().then().catch(err => console.error(err));
