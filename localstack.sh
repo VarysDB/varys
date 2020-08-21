@@ -26,8 +26,3 @@ do
 done
 
 aws --endpoint-url=http://localhost:4575 sns list-topics
-aws --endpoint-url=http://localhost:4575 sns subscribe \
-  --topic-arn "arn:aws:sns:us-east-1:000000000000:varys_facts" \
-  --protocol "https" \
-  --notification-endpoint "http://localhost:4000" \
-  --attributes '{"FilterPolicy":"{\"varys_facts\":[{\"prefix\":\"abc123\"}]}","RedrivePolicy":"{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:000000000000:varys_facts_deadletter\"}"}'

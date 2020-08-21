@@ -68,7 +68,7 @@ export class RootController implements Controller {
         }
     }
 
-    async ping({ request, response }: RouterContext): Promise<void> {
+    async ping({ response }: RouterContext): Promise<void> {
         ok(response, {
             ping: 'pong'
         });

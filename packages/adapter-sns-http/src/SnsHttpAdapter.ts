@@ -6,6 +6,7 @@ export interface SnsHttpAdapterConfig<T> {
     factsTopicArn: string;
     factsDLQArn: string;
     awsConfig: AWSConfig;
+    protocol: 'http' | 'https';
     transformFact: (fact: Fact) => T;
 }
 
@@ -49,6 +50,18 @@ export class SnsHttpAdapter<T extends {}> implements PubSubAdapter {
                 [this.config.topicAttributeName]: {
                     DataType: 'String',
                     StringValue: `${fact.blackboard}:${fact.namespace}:${fact.type}`
+                },
+                blackboard: {
+                    DataType: 'String',
+                    StringValue: fact.blackboard
+                },
+                namespace: {
+                    DataType: 'String',
+                    StringValue: fact.namespace
+                },
+                type: {
+                    DataType: 'String',
+                    StringValue: fact.type
                 }
             },
             TopicArn: this.config.factsTopicArn
@@ -63,10 +76,10 @@ export class SnsHttpAdapter<T extends {}> implements PubSubAdapter {
 
     async subscribe(topic: string, attributes: SubscriptionAttributes): Promise<void> {
 
-        this.$log.debug('About to subscribe to topic %s with attributes %o', topic, attributes);
+        this.$log.debug('About to subscribe to topic %s with attributes %o through protocol %s', topic, attributes, this.config.protocol);
 
         const { $response } = await this.snsClient.subscribe({
-            Protocol: 'https',
+            Protocol: this.config.protocol,
             TopicArn: this.config.factsTopicArn,
             Endpoint: attributes.endpoint,
             Attributes: {
@@ -91,18 +104,17 @@ export class SnsHttpAdapter<T extends {}> implements PubSubAdapter {
     }
 
     private filterPolicyFor(topic: string): string {
-        let filter;
+        const [blackboard, namespace, type] = topic.split(':');
 
-        if (topic.includes('*')) {
-            const astIndex = topic.indexOf('*');
-            filter = [{ prefix: topic.substring(0, astIndex - 1) }];
-        } else {
-            filter = [topic];
-        }
+        const filter = {
+            blackboard: [
+                blackboard
+            ],
+            namespace: namespace === '*' ? undefined : [namespace],
+            filter: type === '*' ? undefined : [type]
+        };
 
-        return JSON.stringify({
-            [this.config.topicAttributeName]: filter
-        });
+        return JSON.stringify(filter);
     }
 
     private redrivePolicy(): string {
