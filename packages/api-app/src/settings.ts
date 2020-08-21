@@ -32,6 +32,6 @@ export const AWS_SNS_DLQ_ARN = env.string('AWS_SNS_DLQ_ARN');
 
 export const AWS_SNS_TOPIC_ATTRIBUTE_NAME = env.string('AWS_SNS_TOPIC_ATTRIBUTE_NAME');
 
-export const AWS_SNS_ENDPOINT = env.string('AWS_SNS_ENDPOINT', undefined);
+export const AWS_SNS_ENDPOINT = env.string('AWS_SNS_ENDPOINT', '');
 
 export const AWS_SNS_SUBSCRIPTION_PROTOCOL = env.string('AWS_SNS_SUBSCRIPTION_PROTOCOL', 'https');

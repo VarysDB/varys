@@ -77,7 +77,7 @@ const pubSubAdapter = new SnsHttpAdapter(loggerFactory, {
         region: AWS_REGION,
         accessKeyId: AWS_ACCESS_KEY_ID,
         secretAccessKey: AWS_SECRET_ACCESS_KEY,
-        endpoint: AWS_SNS_ENDPOINT
+        endpoint: AWS_SNS_ENDPOINT !== '' ? AWS_SNS_ENDPOINT : undefined
     },
     transformFact(fact: Fact): FactDiscoveryDTO {
         return {
