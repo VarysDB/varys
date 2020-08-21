@@ -13,6 +13,8 @@ import {
     AWS_SNS_DLQ_ARN,
     AWS_SNS_FACTS_TOPIC_ARN,
     AWS_SNS_TOPIC_ATTRIBUTE_NAME,
+    AWS_SNS_ENDPOINT,
+    AWS_SNS_SUBSCRIPTION_PROTOCOL,
     DB_CLIENT,
     DB_FACTS_SCHEMA,
     DB_HOST,
@@ -70,10 +72,12 @@ const pubSubAdapter = new SnsHttpAdapter(loggerFactory, {
     topicAttributeName: AWS_SNS_TOPIC_ATTRIBUTE_NAME,
     factsTopicArn: AWS_SNS_FACTS_TOPIC_ARN,
     factsDLQArn: AWS_SNS_DLQ_ARN,
+    protocol: AWS_SNS_SUBSCRIPTION_PROTOCOL,
     awsConfig: {
         region: AWS_REGION,
         accessKeyId: AWS_ACCESS_KEY_ID,
-        secretAccessKey: AWS_SECRET_ACCESS_KEY
+        secretAccessKey: AWS_SECRET_ACCESS_KEY,
+        endpoint: AWS_SNS_ENDPOINT
     },
     transformFact(fact: Fact): FactDiscoveryDTO {
         return {
