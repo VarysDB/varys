@@ -116,7 +116,7 @@ export class SnsHttpAdapter<T extends {}> implements PubSubAdapter {
                 blackboard
             ],
             namespace: namespace === '*' ? undefined : [namespace],
-            filter: type === '*' ? undefined : [type]
+            type: type === '*' ? undefined : [type]
         };
 
         return JSON.stringify(filter);
