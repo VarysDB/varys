@@ -30,9 +30,9 @@ export class FactController implements Controller {
 
     async findByType({ request, response, params }: RouterContext): Promise<void> {
 
-        const { blackboard, namespace, factType } = params as FactRoute.Params;
+        const { blackboard, namespace, type } = params as FactRoute.Params;
 
-        const fact = await this.factService.findByType(factType, blackboard, namespace);
+        const fact = await this.factService.findByType(type, blackboard, namespace);
 
         if (fact) {
             ok<FactDTO>(response, factToDTO(fact));

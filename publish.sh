@@ -4,7 +4,7 @@ PACKAGE="lerna.json"
 REGISTRY=$1
 HUB_ROOT=$2
 
-USAGE="Usage: ./build.sh <REGISTRY> <HUB_ROOT>"
+USAGE="Usage: ./publish.sh <REGISTRY> <HUB_ROOT>"
 
 if [ -z "$REGISTRY" ]; then
   echo "Error: Missing argument REGISTRY"
