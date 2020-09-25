@@ -1,6 +1,6 @@
 {
   "name": "@varys/api-model",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Model interfaces for API",
   "private": false,
   "main": "lib/index.js",

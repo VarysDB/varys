@@ -1,6 +1,6 @@
 {
   "name": "@varys/api-sdk",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Node SDK",
   "private": false,
   "main": "lib/index.js",
@@ -53,7 +53,7 @@
   },
   "homepage": "https://github.com/VarysDB/varys#readme",
   "dependencies": {
-    "@varys/api-model": "^0.2.4",
+    "@varys/api-model": "^0.2.5",
     "node-fetch": "^2.6.0",
     "tslib": "^2.0.0"
   },
