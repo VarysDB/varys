@@ -1,24 +1,18 @@
 FROM node:14.4-alpine as build
 LABEL maintainer="George R. R. Martin"
 
+ARG NPM_TOKEN
+ARG NPM_REGISTRY
+ARG PACKAGE
+ARG VERSION
+
 WORKDIR /app
 
-COPY .dockerignore .dockerignore
-COPY lerna.json lerna.json
-COPY LICENSE LICENSE
-COPY package.json package.json
-COPY README.md README.md
-COPY tsconfig.json tsconfig.json
-COPY yarn.lock yarn.lock
+RUN echo "$VERSION" > .version
 
-COPY packages/domain/ packages/domain/
-COPY packages/adapter-pg/ packages/adapter-pg/
-COPY packages/adapter-sns-http/ packages/adapter-sns-http/
-COPY packages/api-model/ packages/api-model/
-COPY packages/api-app/ packages/api-app/
+RUN printf "registry=https://$NPM_REGISTRY\n//$NPM_REGISTRY/:_authToken=$NPM_TOKEN\n//$NPM_REGISTRY/:always-auth=true" > .npmrc
 
-RUN yarn install
+RUN npm install "@varys/$PACKAGE@$VERSION"
+RUN echo "require('@varys/$PACKAGE');" > index.js
 
-RUN yarn run clean && yarn run bootstrap && yarn run build && yarn cache clean
-
-CMD yarn run start:api-app
+CMD node .
