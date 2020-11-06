@@ -45,7 +45,7 @@ fi
 
 echo "Building package $PACKAGE"
 
-docker build -t "marauder/$PACKAGE" -f "packages/$PACKAGE/Dockerfile" \
+docker build -t "varys/$PACKAGE" -f "packages/$PACKAGE/Dockerfile" \
   --build-arg "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
   --build-arg "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
   --build-arg "NPM_TOKEN=$NPM_TOKEN" \

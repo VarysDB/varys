@@ -28,7 +28,7 @@ fi
 
 echo "Building package $PACKAGE"
 
-docker build -t "marauder/$PACKAGE" -f "packages/$PACKAGE/Dockerfile" \
+docker build -t "varys/$PACKAGE" -f "packages/$PACKAGE/Dockerfile" \
   --build-arg "NPM_TOKEN=$NPM_TOKEN" \
   --build-arg "NPM_REGISTRY=$NPM_REGISTRY" \
   --build-arg "PACKAGE=$PACKAGE" \
