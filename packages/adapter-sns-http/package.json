@@ -1,6 +1,6 @@
 {
   "name": "@varys/adapter-sns-http",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "PubSub adapter based on SNS & HTTP",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/VarysDB/varys#readme",
   "dependencies": {
-    "@varys/domain": "^0.2.6",
+    "@varys/domain": "^0.2.7",
     "aws-sdk": "^2.693.0",
     "tslib": "^2.0.0"
   },
@@ -58,5 +58,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "1be53d4a004f7948ae96563258e42ef1f98b21c8"
+  "gitHead": "c7c6541c2d131002ae3841fc0e2665e725af55cc"
 }
