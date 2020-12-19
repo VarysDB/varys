@@ -2,7 +2,7 @@
   "name": "@varys/root",
   "version": "0.0.0",
   "description": "The master of whispers",
-  "private": true,
+  "private": false,
   "main": "src/index.ts",
   "directories": {
     "packages": "packages",
