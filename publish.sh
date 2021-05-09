@@ -50,7 +50,7 @@ PACKAGES=(
 for p in "${PACKAGES[@]}"; do
   NPM_REGISTRY="$REGISTRY" ./build-image.sh "$p" "$VERSION" || exit 1
 
-  ECR_RELEASE="$ECR_ROOT/varys/$p:$VERSION"
+  ECR_RELEASE="$ECR_ROOT/$p:$VERSION"
 
   docker tag "varys/$p" "$ECR_RELEASE"
   docker push "$ECR_RELEASE"
