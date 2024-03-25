@@ -1,10 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SQS_ENDPOINT="http://localhost:4576"
-SQS="--endpoint-url=$SQS_ENDPOINT sqs"
-SNS="--endpoint-url=http://localhost:4575 sns"
-PROFILE="--profile default"
-REGION="--region us-east-1"
+
+PROFILE="default"
+REGION="us-east-1"
+
+echo "configure region [$REGION]"
+awslocal configure set $PROFILE.region $REGION
 
 declare -a topics=(
     "varys_facts"
@@ -16,13 +18,13 @@ declare -a queues=(
 
 for t in "${topics[@]}"
 do
-    aws $PROFILE $REGION $SNS create-topic --name "$t"
+    awslocal sns create-topic --name "$t"
 done
 
 for q in "${queues[@]}"
 do
-    aws $PROFILE $REGION $SQS create-queue --queue-name "$q"
-    aws $PROFILE $REGION $SQS get-queue-attributes --queue-url "$SQS_ENDPOINT/queue/$q" --attribute-names All
+    awslocal sqs create-queue --queue-name "$q"
 done
 
-aws --endpoint-url=http://localhost:4575 sns list-topics
+awslocal sqs list-queues --output table
+awslocal sns list-topics --output table

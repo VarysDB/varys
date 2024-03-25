@@ -32,7 +32,6 @@
     "type": "git",
     "url": "git+https://github.com/VarysDB/varys.git"
   },
-  "author": "George R. R. Martin",
   "contributors": [
     {
       "name": "Bruno Luís Panuto Silva",

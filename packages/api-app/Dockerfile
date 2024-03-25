@@ -1,5 +1,4 @@
 FROM node:14.4-alpine as build
-LABEL maintainer="George R. R. Martin"
 
 ARG NPM_TOKEN
 ARG NPM_REGISTRY

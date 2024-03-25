@@ -18,6 +18,7 @@ import {
     DB_CLIENT,
     DB_FACTS_SCHEMA,
     DB_HOST,
+    DB_PORT,
     DB_NAME,
     DB_PASSWORD,
     DB_USER,
@@ -40,6 +41,7 @@ const knex = Knex({
     client: DB_CLIENT,
     connection: {
         host: DB_HOST,
+        port: DB_PORT,
         user: DB_USER,
         password: DB_PASSWORD,
         database: DB_NAME,
@@ -68,29 +70,41 @@ const knex = Knex({
 
 const contextFactory = new PgRepositoryContextFactory(knex, DB_FACTS_SCHEMA);
 
-const pubSubAdapter = new SnsHttpAdapter(loggerFactory, {
-    topicAttributeName: AWS_SNS_TOPIC_ATTRIBUTE_NAME,
-    factsTopicArn: AWS_SNS_FACTS_TOPIC_ARN,
-    factsDLQArn: AWS_SNS_DLQ_ARN,
-    protocol: AWS_SNS_SUBSCRIPTION_PROTOCOL,
-    awsConfig: {
-        region: AWS_REGION,
-        accessKeyId: AWS_ACCESS_KEY_ID,
-        secretAccessKey: AWS_SECRET_ACCESS_KEY,
-        endpoint: AWS_SNS_ENDPOINT !== '' ? AWS_SNS_ENDPOINT : undefined
-    },
-    transformFact(fact: Fact): FactDiscoveryDTO {
-        return {
-            blackboard: fact.blackboard,
-            reference: fact.namespace,
-            type: fact.type,
-            source: fact.source,
-            data: fact.data,
-            score: fact.score,
-            discoveryDate: fact.discoveryDate
-        };
-    }
-});
+const pubSubAdapter = process.env['AWS_SNS_ENABLED'] !== '0'
+    ? new SnsHttpAdapter(loggerFactory, {
+        topicAttributeName: AWS_SNS_TOPIC_ATTRIBUTE_NAME,
+        factsTopicArn: AWS_SNS_FACTS_TOPIC_ARN,
+        factsDLQArn: AWS_SNS_DLQ_ARN,
+        protocol: AWS_SNS_SUBSCRIPTION_PROTOCOL,
+        awsConfig: {
+            region: AWS_REGION,
+            accessKeyId: AWS_ACCESS_KEY_ID,
+            secretAccessKey: AWS_SECRET_ACCESS_KEY,
+            endpoint: AWS_SNS_ENDPOINT !== '' ? AWS_SNS_ENDPOINT : undefined
+        },
+        transformFact(fact: Fact): FactDiscoveryDTO {
+            return {
+                blackboard: fact.blackboard,
+                reference: fact.namespace,
+                type: fact.type,
+                source: fact.source,
+                data: fact.data,
+                score: fact.score,
+                discoveryDate: fact.discoveryDate
+            };
+        }
+    })
+    : {
+        async publish(fact: Fact) {
+            return {
+                messageId: `noop:${fact.blackboard}:${fact.namespace}:${fact.type}:${fact.source}:${fact.discoveryDate.getTime()}`
+            };
+        },
+        async subscribe() {
+        },
+        async confirmSubscription() {
+        }
+    };
 
 const blackboardService = new BlackboardService(contextFactory);
 const namespaceService = new NamespaceService(contextFactory);

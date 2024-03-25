@@ -1,0 +1,87 @@
+version: '3.5'
+services:
+  postgres:
+    image: postgres:14.7
+    ports:
+      - '5435:5432'
+    environment:
+      POSTGRES_USER: varys
+      POSTGRES_PASSWORD: shhhh
+      POSTGRES_DB: varys
+    volumes:
+      - ./dataset:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "varys"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - localstack
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack-main
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    environment:
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - HOSTNAME=127.0.0.1
+      - LOCALSTACK_HOSTNAME=127.0.0.1
+      - SERVICES=sns,sqs
+      - MAIN_DOCKER_NETWORK=localstack
+      - DEBUG=1
+    volumes:
+      - './localstack.sh:/etc/localstack/init/ready.d/init-aws.sh'
+    networks:
+      - localstack
+  varys-api:
+    image: varys/api:dev
+    container_name: varys-api-dev
+    build:
+      dockerfile: ./Dockerfile.dev
+      context: .
+      args:
+        - PORT=19611
+    restart: always
+    ports:
+      - '19611:19611'
+    environment:
+      - PORT=19611
+      - LOG_LEVEL=${DEBUG:-INFO}
+      - API_TOKEN=shhhh
+      - DB_CLIENT=pg
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=varys
+      - DB_PASSWORD=shhhh
+      - DB_NAME=varys
+      - DB_FACTS_SCHEMA=facts
+      - AWS_ENDPOINT_URL=http://localhost.localstack.cloud:4566
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_REGION=us-east-1
+      - AWS_SNS_ENABLED=0
+      - AWS_SNS_FACTS_TOPIC_ARN=arn:aws:sns:us-east-1:000000000000:varys_facts
+      - AWS_SNS_DLQ_ARN=http://localhost.localstack.cloud:4566/000000000000/varys_facts_deadletter
+      - AWS_SNS_TOPIC_ATTRIBUTE_NAME=topic
+      - AWS_SNS_ENDPOINT=http://localhost.localstack.cloud:4566
+      - AWS_SNS_SUBSCRIPTION_PROTOCOL=HTTPS
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:19611/ping"]
+      interval: 5s
+      timeout: 1s
+      retries: 10
+      start_period: 5s
+    depends_on:
+     localstack:
+       condition: service_started
+     postgres:
+       condition: service_healthy
+    networks:
+      - localstack
+networks:
+  localstack:
+    driver: bridge

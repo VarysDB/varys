@@ -1,0 +1,19 @@
+FROM node:16.20-alpine
+
+ARG PORT
+
+ENV NODE_ENV=development
+
+WORKDIR /app
+
+RUN npm install -g pnpm@~8.6.10
+
+COPY ["package.json", "pnpm-lock.yaml", "./"]
+RUN pnpm install
+
+COPY . .
+RUN pnpm bootstrap
+
+EXPOSE $PORT
+
+CMD ["pnpm", "run", "start:api-app:ts"]

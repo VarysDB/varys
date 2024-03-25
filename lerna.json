@@ -1,15 +1,8 @@
 {
   "version": "0.2.8",
-  "npmClient": "yarn",
+  "npmClient": "pnpm",
   "useWorkspaces": true,
   "packages": [
     "packages/*"
-  ],
-  "command": {
-    "bootstrap": {
-      "npmClientArgs": [
-        "--no-package-lock"
-      ]
-    }
-  }
+  ]
 }

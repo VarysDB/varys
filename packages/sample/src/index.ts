@@ -20,13 +20,13 @@ const SOURCE = 'sample-app';
 
 const ENDPOINT = 'https://c15d6bccd515.ngrok.io';
 
-const PORT = 4000;
+const PORT = 19612;
 
 const API_TOKEN = process.env['API_TOKEN'];
 assert(API_TOKEN, 'Missing environment variable API_TOKEN');
 
 const varys = Varys.init({
-    apiUrl: 'http://localhost:3000',
+    apiUrl: 'http://127.0.0.1:19611',
     apiToken: API_TOKEN,
     listenerType: 'sns'
 });
@@ -57,6 +57,8 @@ const entityClient = varys.entity<TestEntity>(BLACKBOARD, {
 });
 
 async function main() {
+    await blackboardClient.createBlackboard();
+
     const subscription = await varys.listener().toAll({
         blackboard: BLACKBOARD,
         async handler(fact: FactDTO) {

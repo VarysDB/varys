@@ -13,6 +13,8 @@ export const DB_CLIENT = env.string('DB_CLIENT');
 
 export const DB_HOST = env.string('DB_HOST');
 
+export const DB_PORT = env.int('DB_PORT');
+
 export const DB_USER = env.string('DB_USER');
 
 export const DB_PASSWORD = env.string('DB_PASSWORD', '');
